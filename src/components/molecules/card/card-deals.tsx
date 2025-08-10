@@ -3,25 +3,18 @@ import { moneyFormat } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-function CardDeals({
-  image,
-  title,
-  slug,
-  price,
-  wide,
-  capacity,
-  wifi,
-}: DealsProps) {
+function CardDeals({ image, title, slug, price, wide, capacity }: DealsProps) {
   return (
     <Link href={slug}>
       <figure className="relative">
         {image ? (
           <Image
-            src={image}
+            src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${image}`}
             alt={title}
             height={0}
             width={0}
             className="w-[220px] h-[310px] xl:w-[260px] xl:h-[350px] rounded-3xl object-cover bg-gray-300"
+            unoptimized
           />
         ) : (
           <div className="w-[220px] h-[310px] xl:w-[260px] xl:h-[350px] rounded-3xl object-cover bg-gray-300" />
@@ -73,16 +66,6 @@ function CardDeals({
                   className="w-5 h-5 mr-1"
                 />
                 {capacity}
-              </div>
-              <div className="flex items-center text-sm leading-[21px]">
-                <Image
-                  src="/icons/wifi.svg"
-                  alt="wifi-icon"
-                  height={0}
-                  width={0}
-                  className="w-5 h-5 mr-1"
-                />
-                {wifi}gb
               </div>
             </div>
           </div>

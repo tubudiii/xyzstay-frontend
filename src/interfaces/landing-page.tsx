@@ -5,7 +5,7 @@ export interface DealsProps {
   price: number;
   wide: number;
   capacity: number;
-  wifi: number;
+  // wifi: number;
 }
 
 export interface CategoriesProps {

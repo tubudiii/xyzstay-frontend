@@ -2,7 +2,7 @@ import CardFacility from "@/components/molecules/card/card-facility";
 import Image from "next/image";
 import React from "react";
 
-function Listing() {
+function BoardingHouse() {
   return (
     <div className="w-full max-w-[460px] h-fit p-[30px] space-y-5 bg-white rounded-[30px] shadow-indicator border border-border">
       <Image
@@ -87,4 +87,4 @@ function Listing() {
   );
 }
 
-export default Listing;
+export default BoardingHouse;

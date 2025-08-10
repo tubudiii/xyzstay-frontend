@@ -9,7 +9,7 @@ import Image from "next/image";
 import CardBenefit from "@/components/molecules/card/card-benefit";
 import CardPurpose from "@/components/molecules/card/card-purpose";
 import CardReview from "@/components/molecules/card/card-review";
-import ListingShowcase from "@/components/molecules/listing/listing-showcase";
+import BoardingHouseShowcase from "@/components/molecules/listing/boarding-house-showcase";
 
 function Home() {
   return (
@@ -75,7 +75,7 @@ function Home() {
         </div>
       </section>
 
-      <ListingShowcase
+      <BoardingHouseShowcase
         id="deals-section"
         title="Our Latest Deals"
         subtitle="Explore the beauty of architecture and living love"

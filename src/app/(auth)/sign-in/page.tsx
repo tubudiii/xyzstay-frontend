@@ -15,8 +15,10 @@ import {
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/atomics/use-toast";
+import { useLoginMutation } from "@/services/auth.service";
+import { signIn } from "next-auth/react";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -35,16 +37,40 @@ function SignIn() {
       password: "",
     },
   });
+  const searchParams = useSearchParams();
+  const [login, { isLoading }] = useLoginMutation();
 
-  function onSubmit(values: FormData) {
-    console.log("🚀 ~ onSubmit ~ values:", values);
-    form.reset();
-    toast({
-      title: "Welcome",
-      description: "Sign in successfully",
-      open: true,
-    });
-    router.push("/");
+  async function onSubmit(values: FormData) {
+    try {
+      const res = await login(values).unwrap();
+      // console.log("🚀 ~ onSubmit ~ res:", res);
+
+      if (res.success) {
+        const user = res.data;
+
+        const loginRes = await signIn("credentials", {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          token: user.token,
+          callbackUrl: searchParams.get("callbackUrl") || "/",
+          redirect: false,
+        });
+        toast({
+          title: "Welcome",
+          description: "Sign in successfully",
+          open: true,
+        });
+
+        router.push(loginRes?.url || "/");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Something went wrong",
+        description: error.data.message,
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -118,7 +144,9 @@ function SignIn() {
                 Remember me
               </label>
             </div>
-            <Button type="submit">Sign In</Button>
+            <Button type="submit" disabled={isLoading}>
+              Sign In
+            </Button>
             <Link href="/sign-up">
               <Button variant="third" type="button" className="mt-3">
                 Create New Account

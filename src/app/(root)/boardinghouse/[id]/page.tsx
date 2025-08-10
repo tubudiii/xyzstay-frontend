@@ -7,13 +7,23 @@ import { Button } from "@/components/atomics/button";
 import Title from "@/components/atomics/title";
 import Image from "next/image";
 import Map from "@/components/molecules/map";
-import ListingShowcase from "@/components/molecules/listing/listing-showcase";
+import ListingShowcase from "@/components/molecules/listing/boarding-house-showcase";
 import PhotoGallery from "./photo-gallery";
 import BookingSection from "./booking-section";
 import CustomerReviews from "./customer-reviews";
+import { useGetDetailBoardingHouseQuery } from "@/services/boardinghouse.service";
+import { BoardingHouse } from "@/interfaces/boarding-house";
+import { useMemo } from "react";
 
 function Detail({ params }: { params: { id: string } }) {
-  console.log(params);
+  const { data } = useGetDetailBoardingHouseQuery(params.id);
+  // console.log("🚀 ~ Detail ~ data:", data);
+
+  const BoardingHouse: BoardingHouse | undefined = useMemo(
+    () => data?.data,
+    [data]
+  );
+
   return (
     <main>
       <section
@@ -23,7 +33,15 @@ function Detail({ params }: { params: { id: string } }) {
         <div className="px-10 xl:container xl:mx-auto">
           <Breadcrumbs />
 
-          <PhotoGallery />
+          {BoardingHouse?.thumbnail && (
+            <PhotoGallery
+              photos={
+                Array.isArray(BoardingHouse.thumbnail)
+                  ? BoardingHouse.thumbnail
+                  : [BoardingHouse.thumbnail]
+              }
+            />
+          )}
 
           <div className="mt-[30px] grid grid-cols-3 xl:grid-cols-4 gap-x-5">
             <div className="col-span-2 xl:col-span-3 space-y-5 pr-[50px]">
@@ -31,7 +49,7 @@ function Detail({ params }: { params: { id: string } }) {
 
               <div className="flex items-center justify-between">
                 <h1 className="font-bold text-[32px] leading-[48px] text-secondary max-w-[300px]">
-                  Tedjamudita Buxi Parahyangan
+                  {BoardingHouse?.name}
                 </h1>
 
                 <div className="flex flex-col items-end text-end">
@@ -51,7 +69,7 @@ function Detail({ params }: { params: { id: string } }) {
                     width={0}
                     className="w-5 h-5 mr-1"
                   />
-                  Shanghai, China
+                  {BoardingHouse?.address}
                 </div>
                 <div className="flex items-center font-semibold leading-6">
                   <Image
@@ -61,7 +79,7 @@ function Detail({ params }: { params: { id: string } }) {
                     width={0}
                     className="w-5 h-5 mr-1"
                   />
-                  18,209 sqft
+                  {BoardingHouse?.rooms[0]?.square_feet} sqft
                 </div>
                 <div className="flex items-center font-semibold leading-6">
                   <Image
@@ -71,17 +89,7 @@ function Detail({ params }: { params: { id: string } }) {
                     width={0}
                     className="w-5 h-5 mr-1"
                   />
-                  3 people
-                </div>
-                <div className="flex items-center font-semibold leading-6">
-                  <Image
-                    src="/icons/wifi-dark.svg"
-                    alt="wifi-dark"
-                    height={0}
-                    width={0}
-                    className="w-5 h-5 mr-1"
-                  />
-                  10 gbps
+                  {BoardingHouse?.rooms[0]?.capacity} people
                 </div>
               </div>
             </div>
@@ -123,28 +131,13 @@ function Detail({ params }: { params: { id: string } }) {
           <Title
             section="detail"
             title="About House"
-            subtitle="Riverside house presents a serene and picturesque living experience, nestled along the gentle curves of a meandering river. The architecture of such a house often harmonizes with its natural surroundings, featuring expansive windows and outdoor spaces designed to offer panoramic views of the river gentle curves of a meandering river the living room with its cozy fireplace."
+            subtitle={BoardingHouse?.description}
           />
           <div className="grid grid-cols-2 gap-5">
             <CardFacility
-              icon="/icons/security.svg"
-              title="24/7 Supports"
-              subtitle="Best People"
-            />
-            <CardFacility
-              icon="/icons/weight.svg"
-              title="Gym Space"
-              subtitle="Complete"
-            />
-            <CardFacility
-              icon="/icons/coffee.svg"
-              title="Mini Cafe"
-              subtitle="Western"
-            />
-            <CardFacility
-              icon="/icons/video-play.svg"
-              title="Cinema"
-              subtitle="All Movies Included"
+              icon="/icons/grey-skyline.svg"
+              title="City"
+              subtitle={BoardingHouse?.city?.name ?? "Unknown"}
             />
           </div>
           <Map />
