@@ -1,23 +1,28 @@
 import CardFacility from "@/components/molecules/card/card-facility";
+// import { Room as RoomInterface } from "@/interfaces/room";
+import { RoomWithBoardingHouse } from "@/interfaces/boarding-house";
 import Image from "next/image";
 import React from "react";
 
-function BoardingHouse() {
+function BoardingHouse({ room }: { room: RoomWithBoardingHouse }) {
   return (
     <div className="w-full max-w-[460px] h-fit p-[30px] space-y-5 bg-white rounded-[30px] shadow-indicator border border-border">
-      <Image
-        src="/images/image-detail-1.svg"
-        alt="image-1"
-        height={0}
-        width={0}
-        className="w-full h-[220px] rounded-[30px]"
-      />
+      {room?.images?.[0] && (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${room.images[0].image}`}
+          alt="image-1"
+          height={0}
+          width={0}
+          className="w-full h-[220px] rounded-[30px]"
+          unoptimized
+        />
+      )}
       <h1 className="font-bold text-[22px] leading-[33px] text-secondary">
-        Tedjamudita Buxiang Parahyangan
+        {room?.boarding_house?.name}
       </h1>
       <div className="space-y-3.5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center font-semibold leading-6">
+          <div className="flex items-center font-semibold leading-6 max-w-[300x]">
             <Image
               src="/icons/location-dark.svg"
               alt="location-dark"
@@ -25,17 +30,7 @@ function BoardingHouse() {
               width={0}
               className="w-5 h-5 mr-1"
             />
-            Shanghai, China
-          </div>
-          <div className="flex items-center font-semibold leading-6">
-            <Image
-              src="/icons/format-square-dark.svg"
-              alt="format-square-dark"
-              height={0}
-              width={0}
-              className="w-5 h-5 mr-1"
-            />
-            18,209 sqft
+            {room?.boarding_house?.address}
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -47,42 +42,30 @@ function BoardingHouse() {
               width={0}
               className="w-5 h-5 mr-1"
             />
-            3 people
+            {room?.capacity} people
           </div>
           <div className="flex items-center font-semibold leading-6">
             <Image
-              src="/icons/wifi-dark.svg"
-              alt="wifi-dark"
+              src="/icons/format-square-dark.svg"
+              alt="format-square-dark"
               height={0}
               width={0}
               className="w-5 h-5 mr-1"
             />
-            10 gbps
+            {room?.square_feet} sqft
           </div>
         </div>
       </div>
-      <div className="space-y-3.5">
-        <CardFacility
-          icon="/icons/security.svg"
-          title="24/7 Supports"
-          subtitle="Best People"
-        />
-        <CardFacility
-          icon="/icons/weight.svg"
-          title="Gym Space"
-          subtitle="Complete"
-        />
-        <CardFacility
-          icon="/icons/coffee.svg"
-          title="Mini Cafe"
-          subtitle="Western"
-        />
-        <CardFacility
-          icon="/icons/video-play.svg"
-          title="Cinema"
-          subtitle="All Movies Included"
-        />
-      </div>
+      <CardFacility
+        icon="/icons/weight.svg"
+        title="Room Name"
+        subtitle={room?.name ?? "Unknown"}
+      />
+      <CardFacility
+        icon="/icons/grey-skyline.svg"
+        title="City"
+        subtitle={room?.boarding_house?.city?.name ?? "Unknown"}
+      />{" "}
     </div>
   );
 }

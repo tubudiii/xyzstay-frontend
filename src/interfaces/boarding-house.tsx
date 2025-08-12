@@ -1,3 +1,5 @@
+// src/interfaces/boarding-house.tsx
+
 export interface City {
   id: number;
   name: string;
@@ -21,6 +23,7 @@ export interface Room {
   id: number;
   boarding_house_id: number;
   name: string;
+  slug: string;
   room_type: string;
   square_feet: number;
   capacity: number;
@@ -61,6 +64,11 @@ export interface BoardingHouse {
 
   // Data tambahan dari withCount
   transactions_count: number;
+}
+
+// ✅ Room yang otomatis include boarding house
+export interface RoomWithBoardingHouse extends Room {
+  boarding_house: BoardingHouse;
 }
 
 export interface BoardingHousePagination {

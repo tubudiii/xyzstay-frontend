@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/atomics/checkbox";
 import { DatePickerDemo } from "@/components/molecules/date-picker";
 import Link from "next/link";
 import BoardingHouse from "./boarding-house";
-import Review from "./review";
+// import Review from "./review";
 
 function Checkout() {
   return (
@@ -103,7 +103,7 @@ function Checkout() {
           </div>
         </div>
       </section>
-      <Review />
+      {/* <Review /> */}
     </main>
   );
 }

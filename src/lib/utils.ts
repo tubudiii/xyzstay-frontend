@@ -5,9 +5,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const moneyFormat = new Intl.NumberFormat("en-US", {
+const moneyFormat = new Intl.NumberFormat("id-ID", {
   style: "currency",
-  currency: "USD",
+  currency: "IDR",
 });
 
 export { moneyFormat };

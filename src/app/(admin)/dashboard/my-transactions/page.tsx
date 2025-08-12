@@ -1,50 +1,64 @@
-import { Button } from '@/components/atomics/button'
-import Title from '@/components/atomics/title'
-import DataTransaction from '@/json/city-transaction.json'
-import { CityCenterProps } from '@/interfaces/city-center'
+"use client";
+
+import { Button } from "@/components/atomics/button";
+import Title from "@/components/atomics/title";
+import DataTransaction from "@/json/city-transaction.json";
+import { CityCenterProps } from "@/interfaces/city-center";
 import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-} from '@/components/atomics/pagination'
-import CardTransaction from '@/components/molecules/card/card-transaction'
-import { CityTransactionProps } from '@/interfaces/city-transaction'
-import CardEmpty from '@/components/molecules/card/card-empty'
+} from "@/components/atomics/pagination";
+import CardTransaction from "@/components/molecules/card/card-transaction";
+import { CityTransactionProps } from "@/interfaces/city-transaction";
+import CardEmpty from "@/components/molecules/card/card-empty";
+import { useGetTransactionQuery } from "@/services/transaction.service";
+import { Transaction } from "@/interfaces/transaction";
 
 function MyTransactions() {
+  const { data: transactions } = useGetTransactionQuery({});
+  console.log("🚀 ~ MyTransactions ~ transactions:", transactions);
   return (
     <main>
-      <div className='flex items-center justify-between'>
+      <div className="flex items-center justify-between">
         <Title
-          section='admin'
-          title='My Transactions'
-          subtitle='Manage your house and get money'
+          section="admin"
+          title="My Transactions"
+          subtitle="Manage your house and get money"
         />
       </div>
 
-      <div className='mt-[30px] space-y-5'>
-        {
-          DataTransaction.data.slice(0, 4).map((item: CityTransactionProps, index: number) => (
-            <CardTransaction
-              key={index}
-              image={item.image}
-              title={item.title}
-              location={item.location}
-              days={item.days}
-              price={item.price}
-              status={item.status}
-            />
-          ))
+      <div className="mt-[30px] space-y-5">
+        {transactions?.data?.total
+          ? transactions?.data?.data.map(
+              (transaction: Transaction, index: number) => (
+                <CardTransaction
+                  key={index}
+                  id={transaction.id}
+                  room={{
+                    images: [{ image: transaction.room.images?.[0]?.image || "" }],
+                  }}
+                  title={transaction.room.name}
+                  boardinghouse_name={transaction.boarding_house.name}
+                  location={transaction.boarding_house.address}
+                  days={transaction.total_days}
+                  price={transaction.total_price}
+                  status={transaction.payment_status}
+                />
+              )
+            )
+          : <CardEmpty />
         }
-        {/* <CardEmpty/> */}
       </div>
 
-      <Pagination className='mt-[30px]'>
+      <Pagination className="mt-[30px]">
         <PaginationContent>
           <PaginationItem>
-            <PaginationLink href="#" isActive>1</PaginationLink>
+            <PaginationLink href="#" isActive>
+              1
+            </PaginationLink>
           </PaginationItem>
           <PaginationItem>
             <PaginationLink href="#">2</PaginationLink>
@@ -61,7 +75,7 @@ function MyTransactions() {
         </PaginationContent>
       </Pagination>
     </main>
-  )
+  );
 }
 
-export default MyTransactions
+export default MyTransactions;

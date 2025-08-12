@@ -1,8 +1,13 @@
+// src/interfaces/city-transaction.tsx
 export interface CityTransactionProps {
-  image: string
-  title: string
-  location: string
-  days: number,
-  price: number,
-  status: string
+  id: number;
+  room: {
+    images: { image: string }[]; // Menambahkan informasi gambar kamar
+  };
+  boardinghouse_name: string;
+  title: string;
+  location: string;
+  days: number;
+  price: number;
+  status: string;
 }

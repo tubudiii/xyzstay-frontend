@@ -1,22 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import moment from 'moment'
-import { Calendar as CalendarIcon } from "lucide-react"
-import Image from 'next/image'
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/atomics/button"
-import { Calendar } from "@/components/atomics/calendar"
+import * as React from "react";
+import moment from "moment";
+import { Calendar as CalendarIcon } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/atomics/button";
+import { Calendar } from "@/components/atomics/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/atomics/popover"
-import { useState } from "react"
+} from "@/components/atomics/popover";
+import { useState } from "react";
 
-export function DatePickerDemo() {
-  const [date, setDate] = useState<Date>()
+interface DatePickerDemo {
+  placeholder: string;
+  date?: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+}
 
+export function DatePickerDemo({ placeholder, date, setDate }: DatePickerDemo) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -34,7 +38,11 @@ export function DatePickerDemo() {
               height={24}
               width={24}
             />
-            {date ? moment(date).format("MMMM DD, YYYY") : <span>dd/mm/yyyy</span>}
+            {date ? (
+              moment(date).format("MMMM DD, YYYY")
+            ) : (
+              <span>dd/mm/yyyy</span>
+            )}
           </div>
           <CalendarIcon className="h-4 w-4" />
         </Button>
