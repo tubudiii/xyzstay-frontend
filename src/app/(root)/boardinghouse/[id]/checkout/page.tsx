@@ -95,11 +95,13 @@ function Checkout({ params }: { params: { id: string } }) {
             <div className="rounded-[30px] mt-2.5 p-[30px] bg-white border border-border shadow-indicator space-y-5">
               <div className="space-y-5">
                 <DatePickerDemo
+                  disabled={true}
                   placeholder="Start Date"
                   date={startDate}
                   setDate={setStartDate}
                 />
                 <DatePickerDemo
+                  disabled={true}
                   placeholder="End Date"
                   date={endDate}
                   setDate={setEndDate}
@@ -122,66 +124,16 @@ function Checkout({ params }: { params: { id: string } }) {
                   title="Grand total price"
                   value={moneyFormat.format(booking.grandTotal)}
                 />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-[30px]">
-            <h1 className="font-bold text-[22px] leading-[33px] text-secondary">
-              Payment
-            </h1>
-            <div className="rounded-[30px] mt-2.5 p-[30px] bg-white border border-border shadow-indicator space-y-5">
-              <div className="flex items-center space-x-3">
                 <Button
-                  variant="third"
-                  size="button"
-                  className="w-1/2 border-2 border-gray-light hover:border-primary"
+                  variant="default"
+                  size="default"
+                  className="mt-4"
+                  onClick={handlePayment}
+                  disabled={isLoading}
                 >
-                  <Image
-                    src="/icons/card.svg"
-                    alt="card"
-                    height={24}
-                    width={24}
-                    className="mr-2.5"
-                  />
-                  Transfer
-                </Button>
-                <Button
-                  variant="third"
-                  size="button"
-                  className="w-1/2 border-2 border-gray-light hover:border-primary"
-                >
-                  <Image
-                    src="/icons/visa.svg"
-                    alt="visa"
-                    height={0}
-                    width={0}
-                    className="h-full w-auto"
-                  />
+                  Book Now
                 </Button>
               </div>
-              <CardBooking title="Bank Name" value="BuildWithAngga Fi" />
-              <CardBooking title="Bank Account" value="Nidejia Listings" />
-              <CardBooking title="Number" value="20193050" />
-              <Separator className="bg-border" />
-              <div className="flex items-center space-x-2">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-semibold leading-[21px] peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  I agree with terms & conditions
-                </label>
-              </div>
-              <Button
-                variant="default"
-                size="default"
-                className="mt-4"
-                onClick={handlePayment}
-                disabled={isLoading}
-              >
-                Make a Payment
-              </Button>
             </div>
           </div>
         </div>

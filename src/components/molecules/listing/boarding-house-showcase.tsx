@@ -15,15 +15,18 @@ interface BoardingHouseShowcaseProps {
   id: string;
   title: string;
   subtitle: string;
+  data?: any[];
 }
 
 function BoardingHouseShowcase({
   id,
   title,
   subtitle,
+  data: propData,
 }: BoardingHouseShowcaseProps) {
   const { data } = useGetAllBoardingHouseQuery({});
-  const boardingHouses = data?.data?.data || [];
+  const boardingHouses =
+    propData !== undefined ? propData : data?.data?.data || [];
 
   // console.log("🚀 BoardingHouse:", boardingHouses);
 

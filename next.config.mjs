@@ -5,12 +5,19 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: storageUrl.protocol.replace(":", ""), // "http"
-        hostname: storageUrl.hostname, // "127.0.0.1"
-        port: storageUrl.port, // "8000"
+        protocol: storageUrl.protocol.replace(":", ""),
+        hostname: storageUrl.hostname,
+        port: storageUrl.port,
         pathname: "/storage/**",
       },
+      {
+        protocol: storageUrl.protocol.replace(":", ""),
+        hostname: storageUrl.hostname,
+        port: storageUrl.port,
+        pathname: "/cities/**",
+      },
     ],
+    domains: ["via.placeholder.com"],
   },
 };
 

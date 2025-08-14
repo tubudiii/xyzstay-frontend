@@ -34,8 +34,8 @@ function Checkout() {
             </h1>
             <div className="rounded-[30px] mt-2.5 p-[30px] bg-white border border-border shadow-indicator space-y-5">
               <div className="space-y-5">
-                <DatePickerDemo />
-                <DatePickerDemo />
+                {/* <DatePickerDemo />
+                <DatePickerDemo /> */}
               </div>
               <div className="space-y-5">
                 <CardBooking title="Total days" value="30 days" />

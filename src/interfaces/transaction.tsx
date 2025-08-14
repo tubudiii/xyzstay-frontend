@@ -16,11 +16,23 @@ export interface Transaction {
   fee: number;
   total_price: number;
   payment_method: string;
-  payment_status: string;
+  transactions_status: string;
   transaction_date: null;
   deleted_at: null;
   created_at: Date;
   updated_at: Date;
   boarding_house: BoardingHouse;
   room: Room;
+  payments: Payment[];
+}
+
+export interface Payment {
+  id: number;
+  transaction_id: number;
+  payment_method: string;
+  payment_status: string;
+  total_price: number;
+  expired_date: Date;
+  created_at: Date;
+  updated_at: Date;
 }

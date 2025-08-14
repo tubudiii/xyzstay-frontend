@@ -4,9 +4,13 @@ import { CityTransactionProps } from "@/interfaces/city-transaction";
 import Image from "next/image";
 import Link from "next/link";
 import { HiOutlineClock, HiOutlineCurrencyDollar } from "react-icons/hi";
+import { useUpdateMutation } from "@/services/midtrans.service";
+import { MidtransTrigger } from "@/components/MidtransLoader";
+import { useState } from "react";
 
 function CardTransaction({
   id,
+  id_payment,
   room,
   title,
   boardinghouse_name,
@@ -14,14 +18,41 @@ function CardTransaction({
   days,
   price,
   status,
+  status_payment,
 }: CityTransactionProps) {
+  const [updatePayment, { isLoading }] = useUpdateMutation();
+  const [snapToken, setSnapToken] = useState<string | null>(null);
+  const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "";
+
+  const handlePayNow = async () => {
+    if (!id_payment) return;
+    try {
+      const res = await updatePayment({ id: id_payment }).unwrap();
+      console.log("🚀 ~ handlePayNow ~ res:", res);
+      setSnapToken(res.payment.token);
+    } catch (err) {
+      console.error("Update payment failed:", err);
+    }
+  };
+  // Debug: cek value room dan url gambar
+  const imageUrl = `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${
+    room?.images?.[0]?.image || ""
+  }`;
   return (
     <figure className="flex items-center justify-between bg-white rounded-3xl p-4 border border-border shadow-indicator">
+      {snapToken && (
+        <MidtransTrigger
+          clientKey={clientKey}
+          transactionToken={snapToken}
+          onSuccess={(result) => {}}
+          onPending={(result) => {}}
+          onError={() => {}}
+          onClose={() => {}}
+        />
+      )}
       <div className="flex items-center space-x-4">
         <Image
-          src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${
-            room?.images?.[0]?.image || ""
-          }`}
+          src={imageUrl}
           alt={title}
           height={90}
           width={120}
@@ -80,14 +111,21 @@ function CardTransaction({
               </div>
             </div>
             <div className="flex items-center space-x-3.5">
-              <Button variant="third" size="header">
-                Manage
-              </Button>
               <Link href={`/booking-success/${id}/success`}>
                 <Button variant="third" size="header">
                   Preview
                 </Button>
-              </Link>
+              </Link>{" "}
+              {status === "approved" && status_payment !== "success" && (
+                <Button
+                  variant="third"
+                  size="header"
+                  disabled={!id_payment || isLoading}
+                  onClick={handlePayNow}
+                >
+                  {isLoading ? "Processing..." : "Pay Now"}
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -95,5 +133,4 @@ function CardTransaction({
     </figure>
   );
 }
-
 export default CardTransaction;

@@ -12,18 +12,28 @@ import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 
 interface BookingSectionProps {
-  boardingHouseId: number; // boarding_house_id
-  slug: string; // room name
-  id: number; // room_id
-  price: number;
+  boardingHouseId: number;
+  rooms: Array<{
+    id: number;
+    name: string;
+    slug: string;
+    price_per_day: number;
+    is_available: number;
+    square_feet?: number;
+    capacity?: number;
+    room_type?: string;
+  }>;
+  selectedRoomId: number | null;
+  setSelectedRoomId: (id: number | null) => void;
 }
 
 function BookingSection({
-  id,
-  price,
   boardingHouseId,
-  slug,
+  rooms,
+  selectedRoomId,
+  setSelectedRoomId,
 }: BookingSectionProps) {
+  const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const { toast } = useToast();
@@ -36,20 +46,21 @@ function BookingSection({
       tax = 0,
       grandTotal = 0;
 
-    if (startDate && endDate) {
+    if (startDate && endDate && selectedRoom) {
       totalDays = moment(endDate).diff(startDate, "days");
-      subTotal = totalDays * price;
+      subTotal = totalDays * selectedRoom.price_per_day;
       tax = subTotal * 0.1;
       grandTotal = subTotal + tax;
     }
 
     return { totalDays, subTotal, tax, grandTotal };
-  }, [startDate, endDate, price]);
+  }, [startDate, endDate, selectedRoom]);
 
   const handleBook = async () => {
+    if (!selectedRoom) return;
     try {
       const data = {
-        room_id: id,
+        room_id: selectedRoom.id,
         boarding_house_id: boardingHouseId,
         start_date: moment(startDate).format("YYYY-MM-DD"),
         end_date: moment(endDate).format("YYYY-MM-DD"),
@@ -57,7 +68,7 @@ function BookingSection({
       const res = await checkAvailability(data).unwrap();
       if (res.success) {
         router.push(
-          `/boardinghouse/${slug}/checkout?start_date=${data.start_date}&end_date=${data.end_date}`
+          `/boardinghouse/${selectedRoom.slug}/checkout?start_date=${data.start_date}&end_date=${data.end_date}`
         );
       }
       console.log("🚀 ~ handleBook ~ res:", res);
@@ -88,12 +99,51 @@ function BookingSection({
       <h1 className="font-bold text-lg leading-[27px] text-secondary">
         Start Booking
       </h1>
-      <span className="leading-6">
-        <span className="font-bold text-4xl leading-[54px]">
-          {moneyFormat.format(price)}
-        </span>
-        /day
-      </span>
+      {/* Dropdown Room */}
+      <div className="mb-2">
+        <label htmlFor="room-select" className="block mb-1 font-medium">
+          Pilih Kamar
+        </label>
+        <select
+          id="room-select"
+          className="w-full border rounded px-3 py-2"
+          value={selectedRoomId ?? ""}
+          onChange={(e) => setSelectedRoomId(Number(e.target.value))}
+        >
+          <option value="" disabled>
+            Pilih kamar...
+          </option>
+          {rooms
+            .filter((room) => room.is_available === 1)
+            .map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name} - {moneyFormat.format(room.price_per_day)}/day
+              </option>
+            ))}
+        </select>
+      </div>
+      {/* Harga per hari dan detail kamar */}
+      {selectedRoom && (
+        <div className="space-y-2 mb-2">
+          <span className="leading-6">
+            <span className="font-bold text-4xl leading-[54px]">
+              {moneyFormat.format(selectedRoom.price_per_day)}
+            </span>
+            /day
+          </span>
+          <div className="flex flex-col text-sm text-secondary">
+            {selectedRoom.square_feet !== undefined && (
+              <span>Square Feet: {selectedRoom.square_feet} sqft</span>
+            )}
+            {selectedRoom.capacity !== undefined && (
+              <span>Capacity: {selectedRoom.capacity} people</span>
+            )}
+            {selectedRoom.room_type && (
+              <span>Room Type: {selectedRoom.room_type}</span>
+            )}
+          </div>
+        </div>
+      )}
       <div className="space-y-5">
         <DatePickerDemo
           placeholder="Check in"
@@ -125,20 +175,11 @@ function BookingSection({
         variant="default"
         className="mt-4"
         onClick={handleBook}
-        disabled={!startDate || !endDate || isLoading}
+        disabled={!selectedRoom || !startDate || !endDate || isLoading}
       >
         Book Now
       </Button>
-      <div className="bg-gray-light p-5 rounded-[20px] flex items-center space-x-4">
-        <Image src="/icons/medal-star.svg" alt="icon" height={36} width={36} />
-        <div>
-          <Title
-            section="booking"
-            title="77% Off Discount"
-            subtitle="BuildWithAngga card is giving you extra priviledge today."
-          />
-        </div>
-      </div>
+      {/* ...existing code... */}
     </div>
   );
 }

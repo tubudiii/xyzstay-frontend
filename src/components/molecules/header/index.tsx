@@ -3,20 +3,24 @@ import { Button } from "@/components/atomics/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useGetAllCategoriesQuery } from "@/services/categories.service";
+import { Datum } from "@/interfaces/categories";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/atomics/dropdown-menu";
+
 import Title from "@/components/atomics/title";
 import { signOut, useSession } from "next-auth/react";
 
 function Header() {
-  // const [isLogin, setIsLogin] = useState(true);
   const { data: session } = useSession();
-  // console.log("🚀 ~ Header ~ session:", session);
+  const { data, isLoading, isError } = useGetAllCategoriesQuery({});
 
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   return (
     <header className="container mx-auto fixed inset-x-0 top-[30px] z-20">
       <div className="p-[30px] rounded-[30px] bg-white flex justify-between items-center">
@@ -29,11 +33,98 @@ function Header() {
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
               Featured
             </li>
-            <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
-              Categories
+            <li
+              className="relative cursor-pointer font-semibold leading-6 hover:text-primary"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+            >
+              <span>Categories</span>
+              <div
+                className={`absolute left-0 top-full mt-4 w-64 bg-white shadow-lg rounded-lg transition-opacity duration-200 z-30 ${
+                  isDropdownOpen
+                    ? "opacity-100 pointer-events-auto"
+                    : "opacity-0 pointer-events-none"
+                }`}
+                onMouseLeave={() => {
+                  setIsDropdownOpen(false);
+                  setSelectedCategory(null);
+                }}
+              >
+                <ul className="py-2">
+                  {isLoading ? (
+                    <li className="px-4 py-2 text-gray-400">Loading...</li>
+                  ) : isError ? (
+                    <li className="px-4 py-2 text-red-400">
+                      Error loading categories
+                    </li>
+                  ) : data &&
+                    Array.isArray(data.data) &&
+                    data.data.length > 0 ? (
+                    data.data.map((cat: Datum) => (
+                      <li
+                        key={cat.id}
+                        className={`px-4 py-2 cursor-pointer ${
+                          selectedCategory === cat.id
+                            ? "text-primary font-bold"
+                            : "text-black"
+                        } hover:bg-gray-100`}
+                        onClick={() => setSelectedCategory(cat.id)}
+                      >
+                        {cat.name}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="px-4 py-2 text-gray-400">
+                      No categories found
+                    </li>
+                  )}
+                </ul>
+              </div>
             </li>
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
-              Testimonials
+              <span
+                onClick={() => {
+                  const section = document.getElementById("cities-section");
+                  if (section) {
+                    section.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    const section = document.getElementById("cities-section");
+                    if (section) {
+                      section.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }
+                }}
+                className="outline-none"
+              >
+                Cities
+              </span>
+            </li>
+            <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
+              <span
+                onClick={() => {
+                  const section = document.getElementById("review-section");
+                  if (section) {
+                    section.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    const section = document.getElementById("review-section");
+                    if (section) {
+                      section.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }
+                }}
+                className="outline-none"
+              >
+                Testimonials
+              </span>
             </li>
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
               About

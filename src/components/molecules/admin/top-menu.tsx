@@ -15,7 +15,7 @@ function TopMenu() {
         <Input
           icon='/icons/search.svg'
           variant='auth'
-          placeholder='Search listing or rental by name...'
+          placeholder='Search transactions...'
           className='w-[400px]'
         />
       </div>

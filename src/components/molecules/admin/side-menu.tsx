@@ -20,7 +20,6 @@ function SideMenu() {
             title="my listings"
             url="/dashboard/my-listings"
           />
-          <ItemMenu image="/icons/building.svg" title="my rentals" url="/" />
           <ItemMenu
             image="/icons/card.svg"
             title="my transactions"
@@ -44,21 +43,6 @@ function SideMenu() {
           />
           <ItemMenu image="/icons/setting.svg" title="setting" url="/" />
         </ul>
-      </div>
-
-      <div className="mt-[37.5px] bg-gray-light p-5 space-y-2 rounded-[20px]">
-        <Image
-          src="/icons/medal-star.svg"
-          alt="medal-star"
-          height={40}
-          width={40}
-        />
-        <Title
-          section="header"
-          title="Unlock Features"
-          subtitle="More priviledge"
-        />
-        <Button>Upgrade Now</Button>
       </div>
     </nav>
   );

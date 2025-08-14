@@ -19,7 +19,6 @@ import { Transaction } from "@/interfaces/transaction";
 
 function MyTransactions() {
   const { data: transactions } = useGetTransactionQuery({});
-  console.log("🚀 ~ MyTransactions ~ transactions:", transactions);
   return (
     <main>
       <div className="flex items-center justify-between">
@@ -31,26 +30,35 @@ function MyTransactions() {
       </div>
 
       <div className="mt-[30px] space-y-5">
-        {transactions?.data?.total
-          ? transactions?.data?.data.map(
-              (transaction: Transaction, index: number) => (
+        {transactions?.data?.total ? (
+          transactions?.data?.data.map(
+            (transaction: Transaction, index: number) => {
+              const p = transaction.payments?.[0];
+              console.log("🚀 ~ MyTransactions ~ transaction:", p?.id);
+              return (
                 <CardTransaction
                   key={index}
+                  id_payment={p?.id ?? null}
+                  status_payment={transaction.payments[0]?.payment_status}
                   id={transaction.id}
                   room={{
-                    images: [{ image: transaction.room.images?.[0]?.image || "" }],
+                    images: [
+                      { image: transaction.room.images?.[0]?.image || "" },
+                    ],
                   }}
                   title={transaction.room.name}
                   boardinghouse_name={transaction.boarding_house.name}
                   location={transaction.boarding_house.address}
                   days={transaction.total_days}
                   price={transaction.total_price}
-                  status={transaction.payment_status}
+                  status={transaction.transactions_status}
                 />
-              )
-            )
-          : <CardEmpty />
-        }
+              );
+            }
+          )
+        ) : (
+          <CardEmpty />
+        )}
       </div>
 
       <Pagination className="mt-[30px]">

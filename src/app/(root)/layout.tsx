@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Nidejia",
+  title: "XYZ Stay",
   description: "Find Glorious Living And Loving Space",
   icons: {
     icon: "/favicon.svg",

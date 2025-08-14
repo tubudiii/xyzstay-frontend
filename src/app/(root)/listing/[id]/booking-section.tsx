@@ -21,8 +21,8 @@ function BookingSection({ id }: BookingSectionProps) {
         /day
       </span>
       <div className="space-y-5">
-        <DatePickerDemo />
-        <DatePickerDemo />
+        {/* <DatePickerDemo />
+        <DatePickerDemo /> */}
       </div>
       <div className="space-y-5">
         <CardBooking title="Total days" value="30 days" />

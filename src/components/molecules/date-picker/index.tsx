@@ -15,16 +15,23 @@ import {
 import { useState } from "react";
 
 interface DatePickerDemo {
+  disabled?: boolean;
   placeholder: string;
   date?: Date;
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }
 
-export function DatePickerDemo({ placeholder, date, setDate }: DatePickerDemo) {
+export function DatePickerDemo({
+  placeholder,
+  date,
+  setDate,
+  disabled,
+}: DatePickerDemo) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant={"third"}
           className={cn(
             "w-full justify-between text-left font-normal",
