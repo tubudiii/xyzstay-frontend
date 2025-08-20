@@ -24,9 +24,29 @@ export const authOptions: AuthOptions = {
         token: {
           type: "text",
         },
+        password: {
+          type: "password",
+        },
       },
       authorize: async (credentials, req) => {
-        return credentials || null;
+        // Ambil data user terbaru dari backend
+        try {
+          const res = await fetch("http://127.0.0.1:8000/api/login", {
+            method: "POST",
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }),
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          if (data?.data && data?.data?.id) {
+            return data.data;
+          }
+          return null;
+        } catch {
+          return null;
+        }
       },
     }),
   ],
@@ -35,6 +55,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = +user.id;
         token.token = user.token;
+        token.phone_number = user.phone_number;
       }
       return token;
     },
@@ -42,6 +63,7 @@ export const authOptions: AuthOptions = {
       if (session?.user) {
         session.user.id = token.id as number;
         session.user.token = token.token as number;
+        session.user.phone_number = token.phone_number;
       }
       return session;
     },

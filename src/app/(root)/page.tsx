@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import CardIndicator from "@/components/molecules/card/card-indicator";
 import { Button } from "@/components/atomics/button";
@@ -21,10 +22,13 @@ import {
 import CardReview from "@/components/molecules/card/card-review";
 import BoardingHouseShowcase from "@/components/molecules/listing/boarding-house-showcase";
 import { Testimonial } from "@/interfaces/testimonial";
-
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useGetAllTestimonialsQuery } from "@/services/testimonial.service";
 
 function Home() {
+  const { data: session } = useSession(); // ambil data session terbaru
+
   const {
     data: testimonials = [],
     isLoading,
@@ -38,6 +42,71 @@ function Home() {
   } = useGetAllCitiesQuery(null);
 
   const cities = citiesData?.data || [];
+  const router = useRouter();
+
+  const patchedTestimonials: Testimonial[] = testimonials.map(
+    (item: Testimonial) => {
+      if (session?.user && item.user_id === session.user.id) {
+        return {
+          ...item,
+          name: session.user.name, // pakai nama terbaru dari session
+        };
+      }
+      return item;
+    }
+  );
+  // State untuk input search
+  const [search, setSearch] = React.useState("");
+
+  // Ambil data kategori
+  const {
+    data: categoriesData,
+    isLoading: loadingCategories,
+    isError: errorCategories,
+  } = useGetAllCategoriesQuery(null);
+  const categories = categoriesData?.data || [];
+
+  // Ambil data boarding house dari semua city dan category
+  const boardingHouses = [
+    ...cities.flatMap((city: City) => city.boarding_houses || []),
+    ...categories.flatMap((cat: any) => cat.boarding_houses || []),
+  ];
+
+  // Fungsi handle search
+  const handleSearch = () => {
+    const keyword = search.trim().toLowerCase();
+    if (!keyword) return;
+
+    // Cari city
+    const foundCity = cities.find((city: City) =>
+      city.name.toLowerCase().includes(keyword)
+    );
+    if (foundCity) {
+      router.push(`/boardinghouse/catalog?city=${foundCity.id}`);
+      return;
+    }
+
+    // Cari category
+    const foundCategory = categories.find((cat: any) =>
+      cat.name.toLowerCase().includes(keyword)
+    );
+    if (foundCategory) {
+      router.push(`/boardinghouse/catalog?category=${foundCategory.id}`);
+      return;
+    }
+
+    // Cari boarding house
+    const foundBH = boardingHouses.find((bh: any) =>
+      bh.name?.toLowerCase().includes(keyword)
+    );
+    if (foundBH) {
+      router.push(`/boardinghouse/catalog?boardinghouse=${foundBH.id}`);
+      return;
+    }
+
+    // Jika tidak ditemukan, redirect ke katalog dengan query search
+    router.push(`/boardinghouse/catalog?search=${encodeURIComponent(search)}`);
+  };
 
   return (
     <main>
@@ -55,11 +124,16 @@ function Home() {
             <div className="pt-[50px] flex items-center">
               <div className="grow">
                 <Input
-                  placeholder="Search by city or categories..."
+                  placeholder="Search by city, category, or boarding house..."
                   variant="hero"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearch();
+                  }}
                 />
               </div>
-              <Button variant="default" size="hero">
+              <Button variant="default" size="hero" onClick={handleSearch}>
                 Explore
               </Button>
             </div>
@@ -153,13 +227,20 @@ function Home() {
                   }
                 }
                 return (
-                  <CardIndicator
+                  <div
                     key={city.id}
-                    icon={imageSrc}
-                    title={city.name}
-                    subtitle={`${city.boarding_houses.length} boarding houses`}
-                    section="categories"
-                  />
+                    className="cursor-pointer"
+                    onClick={() =>
+                      router.push(`/boardinghouse/catalog?city=${city.id}`)
+                    }
+                  >
+                    <CardIndicator
+                      icon={imageSrc}
+                      title={city.name}
+                      subtitle={`${city.boarding_houses.length} boarding houses`}
+                      section="categories"
+                    />
+                  </div>
                 );
               })
             )}
@@ -185,81 +266,49 @@ function Home() {
                 <CardBenefit benefit="All other benefits, we promise" />
               </ul>
             </div>
-            <div className="mt-[30px] flex items-center space-x-3 xl:space-x-[14px]">
-              <Button
-                variant="default"
-                size="header"
-                className="flex items-center"
-              >
-                <Image
-                  src="/icons/message-notif.svg"
-                  alt="message-notif"
-                  height={0}
-                  width={0}
-                  className="h-5 w-5 mr-2.5"
-                />
-                Call Sales
-              </Button>
-              <Button variant="third" size="header">
-                All Benefits
-              </Button>
-            </div>
           </div>
           <div className="max-w-[650px] h-full flex items-center">
             {/* Carousel untuk CardPurpose dari kategori */}
-            {(() => {
-              const {
-                data: categoriesData,
-                isLoading: loadingCategories,
-                isError: errorCategories,
-              } = useGetAllCategoriesQuery(null);
-              const categories = categoriesData?.data || [];
-              if (loadingCategories) {
-                return (
-                  <div className="w-full text-center text-gray-400">
-                    Loading...
-                  </div>
-                );
-              }
-              if (errorCategories) {
-                return (
-                  <div className="w-full text-center text-red-400">
-                    Gagal memuat data kategori.
-                  </div>
-                );
-              }
-              if (categories.length === 0) {
-                return (
-                  <div className="w-full text-center text-gray-400">
-                    Belum ada data kategori.
-                  </div>
-                );
-              }
-              console.log("🚀 ~ categories:", categories);
-              return (
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {categories.map((cat: any) => {
-                      // Gambar kategori dari backend
-                      const backendUrl =
-                        process.env.NEXT_PUBLIC_STORAGE_BASE_URL;
-                      let imageSrc = Array.isArray(cat.image)
-                        ? cat.image[0]
-                        : cat.image;
-                      if (imageSrc && !imageSrc.startsWith("http")) {
-                        // Jika path sudah mengandung 'storage/' atau 'cities/'
-                        if (
-                          imageSrc.startsWith("storage/") ||
-                          imageSrc.startsWith("cities/")
-                        ) {
-                          imageSrc = `${backendUrl}/${imageSrc}`;
-                        } else {
-                          imageSrc = `${backendUrl}/storage/${imageSrc}`;
-                        }
+            {loadingCategories ? (
+              <div className="w-full text-center text-gray-400">Loading...</div>
+            ) : errorCategories ? (
+              <div className="w-full text-center text-red-400">
+                Gagal memuat data kategori.
+              </div>
+            ) : categories.length === 0 ? (
+              <div className="w-full text-center text-gray-400">
+                Belum ada data kategori.
+              </div>
+            ) : (
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {categories.map((cat: any) => {
+                    // Gambar kategori dari backend
+                    const backendUrl = process.env.NEXT_PUBLIC_STORAGE_BASE_URL;
+                    let imageSrc = Array.isArray(cat.image)
+                      ? cat.image[0]
+                      : cat.image;
+                    if (imageSrc && !imageSrc.startsWith("http")) {
+                      if (
+                        imageSrc.startsWith("storage/") ||
+                        imageSrc.startsWith("cities/")
+                      ) {
+                        imageSrc = `${backendUrl}/${imageSrc}`;
+                      } else {
+                        imageSrc = `${backendUrl}/storage/${imageSrc}`;
                       }
-                      return (
+                    }
+                    return (
+                      <div
+                        key={cat.id}
+                        className="cursor-pointer"
+                        onClick={() =>
+                          router.push(
+                            `/boardinghouse/catalog?category=${cat.id}`
+                          )
+                        }
+                      >
                         <CardPurpose
-                          key={cat.id}
                           image={imageSrc}
                           title={cat.name}
                           purpose={
@@ -268,14 +317,14 @@ function Home() {
                               : "0"
                           }
                         />
-                      );
-                    })}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
-              );
-            })()}
+                      </div>
+                    );
+                  })}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            )}
           </div>
         </div>
       </section>
@@ -285,7 +334,6 @@ function Home() {
           <Title
             title="Happy Customers"
             subtitle={`We’d love to come back again soon`}
-            section=""
           />
         </div>
         <div className="mt-[30px] grid grid-cols-3 gap-[30px]">
@@ -297,12 +345,12 @@ function Home() {
             <div className="col-span-3 text-center text-red-400">
               Gagal memuat testimonial.
             </div>
-          ) : testimonials.length === 0 ? (
+          ) : patchedTestimonials.length === 0 ? (
             <div className="col-span-3 text-center text-gray-400">
               Belum ada testimonial.
             </div>
           ) : (
-            testimonials.map((item: Testimonial) => (
+            patchedTestimonials.map((item: Testimonial) => (
               <CardReview
                 key={item.id}
                 rating={item.rating}

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Button } from "@/components/atomics/button";
 import Title from "@/components/atomics/title";
 import {
   Carousel,
@@ -66,6 +67,17 @@ function BoardingHouseShowcase({
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
+      <div className="flex justify-center mt-2">
+        <Button
+          variant="default"
+          size="header"
+          onClick={() => {
+            window.location.href = "/boardinghouse/catalog";
+          }}
+        >
+          See More
+        </Button>
+      </div>
     </section>
   );
 }

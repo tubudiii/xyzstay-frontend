@@ -16,11 +16,6 @@ function SideMenu() {
         <ul className="mt-3.5 flex flex-col space-y-6">
           <ItemMenu image="/icons/card.svg" title="overview" url="/dashboard" />
           <ItemMenu
-            image="/icons/house-2 2.svg"
-            title="my listings"
-            url="/dashboard/my-listings"
-          />
-          <ItemMenu
             image="/icons/card.svg"
             title="my transactions"
             url="/dashboard/my-transactions"
@@ -32,16 +27,10 @@ function SideMenu() {
         <h1 className="font-semibold text-sm leading-[21px]">Other</h1>
         <ul className="mt-3.5 flex flex-col space-y-6">
           <ItemMenu
-            image="/icons/profile-2user-fill.svg"
-            title="customers"
-            url="/"
+            image="/icons/setting.svg"
+            title="setting"
+            url="/dashboard/setting"
           />
-          <ItemMenu
-            image="/icons/ticket-discount.svg"
-            title="vouchers"
-            url="/"
-          />
-          <ItemMenu image="/icons/setting.svg" title="setting" url="/" />
         </ul>
       </div>
     </nav>

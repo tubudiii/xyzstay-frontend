@@ -38,9 +38,13 @@ export interface Room {
 
 export interface Testimonial {
   id: number;
+  boarding_house_id: number;
   user_id: number;
-  comment: string;
+  photo: string | null;
+  name: string;
+  content: string;
   rating: number;
+  photo_url?: string;
 }
 
 export interface BoardingHouse {

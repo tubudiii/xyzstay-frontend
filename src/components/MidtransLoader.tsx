@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useToast } from "@/components/atomics/use-toast";
 
 export interface MidtransPaymentProps {
   clientKey: string;
@@ -26,15 +27,17 @@ declare global {
   }
 }
 
-export function MidtransTrigger({
-  clientKey,
-  transactionToken,
-  onSuccess,
-  onPending,
-  onError,
-  onClose,
-}: MidtransPaymentProps) {
+export function MidtransTrigger(props: MidtransPaymentProps) {
+  const {
+    clientKey,
+    transactionToken,
+    onSuccess,
+    onPending,
+    onError,
+    onClose,
+  } = props;
   const hasRun = useRef(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!transactionToken || hasRun.current) return;
@@ -48,9 +51,30 @@ export function MidtransTrigger({
       if (window.snap) {
         hasRun.current = true;
         window.snap.pay(transactionToken, {
-          onSuccess: (result) => onSuccess?.(result),
-          onPending: (result) => onPending?.(result),
-          onError: (error) => onError?.(error),
+          onSuccess: (result) => {
+            toast({
+              title: "Pembayaran Berhasil",
+              description: "Transaksi berhasil diproses.",
+              variant: "default",
+            });
+            onSuccess?.(result);
+          },
+          onPending: (result) => {
+            toast({
+              title: "Pembayaran Pending",
+              description: "Transaksi sedang diproses.",
+              variant: "default",
+            });
+            onPending?.(result);
+          },
+          onError: (error) => {
+            toast({
+              title: "Pembayaran Gagal",
+              description: "Terjadi kesalahan pada transaksi.",
+              variant: "destructive",
+            });
+            onError?.(error);
+          },
           onClose: () => onClose?.(),
         });
       } else {
@@ -66,4 +90,3 @@ export function MidtransTrigger({
 
   return null;
 }
-    

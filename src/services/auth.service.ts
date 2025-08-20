@@ -16,7 +16,18 @@ export const authApi = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    updateProfile: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/user/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useUpdateProfileMutation,
+} = authApi;

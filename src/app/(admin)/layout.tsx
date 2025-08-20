@@ -5,6 +5,7 @@ import TopMenu from "@/components/molecules/admin/top-menu";
 import SideMenu from "@/components/molecules/admin/side-menu";
 import { Toaster } from "@/components/atomics/toaster";
 import ReduxProvider from "@/providers/redux";
+import { UserProvider } from "@/context/UserContext";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -28,16 +29,18 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <ReduxProvider>
-          <div className="bg-gray-light">
-            <div className="flex space-x-[30px] p-[30px] container mx-auto">
-              <SideMenu />
-              <div className="w-full">
-                <TopMenu />
-                <div className="py-[30px]">{children}</div>
+          <UserProvider>
+            <div className="bg-gray-light">
+              <div className="flex space-x-[30px] p-[30px] container mx-auto">
+                <SideMenu />
+                <div className="w-full">
+                  <TopMenu />
+                  <div className="py-[30px]">{children}</div>
+                </div>
               </div>
             </div>
-          </div>
-          <Toaster />
+            <Toaster />
+          </UserProvider>
         </ReduxProvider>
       </body>
     </html>

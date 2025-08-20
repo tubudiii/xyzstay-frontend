@@ -15,10 +15,11 @@ import {
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useToast } from "@/components/atomics/use-toast";
-import { useLoginMutation } from "@/services/auth.service";
 import { signIn } from "next-auth/react";
+import ResendVerification from "@/components/ResendVerification";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -38,36 +39,47 @@ function SignIn() {
     },
   });
   const searchParams = useSearchParams();
-  const [login, { isLoading }] = useLoginMutation();
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
   async function onSubmit(values: FormData) {
     try {
-      const res = await login(values).unwrap();
-      // console.log("🚀 ~ onSubmit ~ res:", res);
+      const loginRes = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false, // biar kita handle routing manual
+        callbackUrl: searchParams.get("callbackUrl") || "/",
+      });
+      console.log("🚀 ~ onSubmit ~ loginRes:", loginRes)
 
-      if (res.success) {
-        const user = res.data;
-
-        const loginRes = await signIn("credentials", {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          token: user.token,
-          callbackUrl: searchParams.get("callbackUrl") || "/",
-          redirect: false,
-        });
+      if (loginRes?.error) {
+        // Deteksi error email belum diverifikasi (sesuaikan dengan respon dari backend)
+        if (loginRes.error.toLowerCase().includes("belum diverifikasi")) {
+          setUnverifiedEmail(values.email);
+          toast({
+            title: "Email belum diverifikasi",
+            description:
+              "Silakan cek email Anda untuk verifikasi. Jika belum menerima email, klik tombol di bawah.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Something went wrong",
+            description: loginRes.error,
+            variant: "destructive",
+          });
+        }
+      } else {
         toast({
           title: "Welcome",
           description: "Sign in successfully",
           open: true,
         });
-
         router.push(loginRes?.url || "/");
       }
     } catch (error: any) {
       toast({
         title: "Something went wrong",
-        description: error.data.message,
+        description: error.message || "Login gagal.",
         variant: "destructive",
       });
     }
@@ -85,7 +97,7 @@ function SignIn() {
           section=""
         />
 
-        {/* Form for create account */}
+        {/* Form Sign In */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -144,9 +156,8 @@ function SignIn() {
                 Remember me
               </label>
             </div>
-            <Button type="submit" disabled={isLoading}>
-              Sign In
-            </Button>
+            <Button type="submit">Sign In</Button>
+            {unverifiedEmail && <ResendVerification email={unverifiedEmail} />}
             <Link href="/sign-up">
               <Button variant="third" type="button" className="mt-3">
                 Create New Account

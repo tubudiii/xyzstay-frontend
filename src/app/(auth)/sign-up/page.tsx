@@ -52,27 +52,18 @@ function SignUp() {
       }).unwrap();
 
       if (res.success) {
-        const user = res.data;
-        await signIn("credentials", {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          token: user.token,
-          redirect: false,
-        });
         toast({
-          title: "Welcome",
-          description: "Sign Up successfully",
+          title: "Registrasi Berhasil",
+          description: "Silakan cek email Anda untuk verifikasi sebelum login.",
           open: true,
         });
-        router.push("/");
+        // form.reset();
+        router.push("/sign-in");
       }
-      // console.log("🚀 ~ onSubmit ~ res:", res);
-      // form.reset();
     } catch (error: any) {
       toast({
         title: "Something went wrong",
-        description: error.data.message,
+        description: error.data?.message || "Registrasi gagal.",
         variant: "destructive",
       });
     }
