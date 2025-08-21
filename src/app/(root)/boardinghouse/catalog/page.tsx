@@ -26,12 +26,20 @@ export default function CatalogPage() {
   const selectedCategory = categoryParam ? Number(categoryParam) : null;
   const selectedCity = cityParam ? Number(cityParam) : null;
 
+  // State untuk search
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Filter logic
   const filteredBoardingHouses = boardingHouses.filter((house) => {
     let match = true;
     if (selectedCategory)
       match = match && house.category_id === selectedCategory;
     if (selectedCity) match = match && house.city_id === selectedCity;
+    // Filter by search term
+    if (searchTerm.trim()) {
+      match =
+        match && house.name.toLowerCase().includes(searchTerm.toLowerCase());
+    }
     return match;
   });
 
@@ -61,6 +69,29 @@ export default function CatalogPage() {
         <h1 className="font-bold text-3xl mb-8 text-secondary text-center">
           Catalog Boarding House
         </h1>
+
+        {/* Search Bar */}
+        <form
+          className="flex w-full max-w-lg mx-auto mb-8 shadow-lg rounded-xl overflow-hidden bg-white border border-gray-200"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearchTerm(searchTerm.trim());
+          }}
+        >
+          <input
+            type="text"
+            className="flex-1 px-5 py-3 text-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-secondary border-none outline-none"
+            placeholder="🔍 Cari nama boarding house..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="px-6 py-3 bg-gradient-to-r from-secondary to-primary text-white font-semibold text-lg transition-all hover:from-primary hover:to-secondary focus:outline-none"
+          >
+            Search
+          </button>
+        </form>
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">

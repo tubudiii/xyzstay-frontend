@@ -49,6 +49,7 @@ function Header() {
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
               Featured
             </li>
+
             <li
               className="relative cursor-pointer font-semibold leading-6 hover:text-primary"
               onMouseEnter={() => setIsDropdownOpen(true)}
@@ -103,10 +104,6 @@ function Header() {
             <li
               className="relative cursor-pointer font-semibold leading-6 hover:text-primary"
               onMouseEnter={() => setIsCityDropdownOpen(true)}
-              onMouseLeave={() => {
-                setIsCityDropdownOpen(false);
-                setSelectedCity(null);
-              }}
             >
               <span>Cities</span>
               <div
@@ -114,7 +111,11 @@ function Header() {
                   isCityDropdownOpen
                     ? "opacity-100 pointer-events-auto"
                     : "opacity-0 pointer-events-none"
-                } pointer-events-auto`}
+                }`}
+                onMouseLeave={() => {
+                  setIsCityDropdownOpen(false);
+                  setSelectedCity(null);
+                }}
               >
                 <ul className="py-2">
                   {isLoadingCities ? (
@@ -158,6 +159,7 @@ function Header() {
                 </ul>
               </div>
             </li>
+            {/* testimonials section */}
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
               <span
                 onClick={() => {
@@ -181,6 +183,7 @@ function Header() {
                 Testimonials
               </span>
             </li>
+            {/* about section */}
             <li className="cursor-pointer font-semibold leading-6 hover:text-primary">
               About
             </li>
@@ -229,7 +232,7 @@ function Header() {
                 My Transactions
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => (window.location.href = "dashboard/setting")}
+                onClick={() => (window.location.href = "/dashboard/setting")}
               >
                 Settings
               </DropdownMenuItem>
