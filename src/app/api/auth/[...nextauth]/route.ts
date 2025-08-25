@@ -41,6 +41,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 86400, // 1 hari (dalam detik)
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {

@@ -138,7 +138,7 @@ function Checkout({ params }: { params: { id: string } }) {
           </div>
         </div>
       </section>
-      <Review />
+      {room?.data && <Review boardingHouseId={room.data.boarding_house_id} />}
     </main>
   );
 }
