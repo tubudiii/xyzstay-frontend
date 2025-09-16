@@ -8,16 +8,13 @@ import { Separator } from "@/components/atomics/separator";
 import Title from "@/components/atomics/title";
 import { useGetAllCitiesQuery } from "@/services/city.service";
 import { City } from "@/interfaces/city";
-import Image from "next/image";
 import CardBenefit from "@/components/molecules/card/card-benefit";
 import CardPurpose from "@/components/molecules/card/card-purpose";
-import { useGetAllCategoriesQuery } from "@/services/categories.service";
 import {
   Carousel,
   CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 } from "@/components/atomics/carousel";
 import CardReview from "@/components/molecules/card/card-review";
 import BoardingHouseShowcase from "@/components/molecules/listing/boarding-house-showcase";
@@ -25,9 +22,10 @@ import { Testimonial } from "@/interfaces/testimonial";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useGetAllTestimonialsQuery } from "@/services/testimonial.service";
+import { useGetAllCategoriesQuery } from "@/services/categories.service";
 
 function Home() {
-  const { data: session } = useSession(); // ambil data session terbaru
+  const { data: session } = useSession();
 
   const {
     data: testimonials = [],
@@ -55,6 +53,7 @@ function Home() {
       return item;
     }
   );
+
   // State untuk input search
   const [search, setSearch] = React.useState("");
 
@@ -110,6 +109,7 @@ function Home() {
 
   return (
     <main>
+      {/* HERO */}
       <section
         id="hero-section"
         className={`bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/bg-image.svg')] min-h-[750px] max-h-[750px] xl:max-h-[850px]`}
@@ -141,6 +141,7 @@ function Home() {
         </div>
       </section>
 
+      {/* INDICATORS */}
       <section
         id="indicator-section"
         className="px-10 xl:container xl:mx-auto -mt-16 pb-9"
@@ -176,12 +177,14 @@ function Home() {
         </div>
       </section>
 
+      {/* BOARDING HOUSE SHOWCASE */}
       <BoardingHouseShowcase
         id="deals-section"
         title="Our Latest Deals"
         subtitle="Explore the beauty of architecture and living love"
       />
 
+      {/* CITIES */}
       <section id="cities-section" className="bg-gray-light">
         <div className="px-10 xl:container xl:mx-auto py-[50px]">
           <div className="flex items-center justify-between">
@@ -206,7 +209,6 @@ function Home() {
               </div>
             ) : (
               cities.map((city: City) => {
-                // Gambar city dari backend
                 const backendUrl =
                   process.env.NEXT_PUBLIC_STORAGE_BASE_URL || "";
                 let imageSrc = city.image;
@@ -248,6 +250,7 @@ function Home() {
         </div>
       </section>
 
+      {/* BENEFITS & CATEGORIES */}
       <section
         id="benefits-section"
         className="px-10 xl:container xl:mx-auto mt-[100px]"
@@ -268,7 +271,6 @@ function Home() {
             </div>
           </div>
           <div className="max-w-[650px] h-full flex items-center">
-            {/* Carousel untuk CardPurpose dari kategori */}
             {loadingCategories ? (
               <div className="w-full text-center text-gray-400">Loading...</div>
             ) : errorCategories ? (
@@ -283,7 +285,6 @@ function Home() {
               <Carousel className="w-full">
                 <CarouselContent>
                   {categories.map((cat: any) => {
-                    // Gambar kategori dari backend
                     const backendUrl = process.env.NEXT_PUBLIC_STORAGE_BASE_URL;
                     let imageSrc = Array.isArray(cat.image)
                       ? cat.image[0]
@@ -329,6 +330,7 @@ function Home() {
         </div>
       </section>
 
+      {/* TESTIMONIALS */}
       <section id="review-section" className="container mx-auto my-[100px]">
         <div className="flex justify-center text-center">
           <Title

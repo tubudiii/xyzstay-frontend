@@ -60,6 +60,7 @@ export function DatePickerDemo({
           selected={date}
           onSelect={setDate}
           initialFocus
+          fromDate={new Date()}
           className="w-full min-w-[358px] rounded-lg bg-white"
         />
       </PopoverContent>

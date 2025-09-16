@@ -12,19 +12,32 @@ import { useState } from "react";
 export default function CatalogPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  // ...existing code...
+  const pageParam = searchParams.get("page");
+  const currentPage = pageParam ? Number(pageParam) : 1;
+
+  // Gunakan query param sebagai state filter
   const categoryParam = searchParams.get("category");
   const cityParam = searchParams.get("city");
+  const selectedCategory = categoryParam ? Number(categoryParam) : null;
+  const selectedCity = cityParam ? Number(cityParam) : null;
 
-  const { data, isLoading, isError } = useGetAllBoardingHouseQuery({});
+  // Jika ada filter city/category, ambil semua data (per_page besar)
+  const isFilterActive = !!selectedCategory || !!selectedCity;
+  const perPage = isFilterActive ? 1000 : 16;
+  const page = isFilterActive ? 1 : currentPage;
+  const { data, isLoading, isError } = useGetAllBoardingHouseQuery({
+    page,
+    per_page: perPage,
+    category: selectedCategory || undefined,
+    city: selectedCity || undefined,
+  });
   const { data: categoriesData } = useGetAllCategoriesQuery({});
   const { data: citiesData } = useGetAllCitiesQuery({});
   const boardingHouses: BoardingHouse[] = data?.data?.data || [];
+  const lastPage: number = isFilterActive ? 1 : data?.data?.last_page || 1;
   const categories: Category[] = categoriesData?.data || [];
   const cities: City[] = citiesData?.data || [];
-
-  // Gunakan query param sebagai state filter
-  const selectedCategory = categoryParam ? Number(categoryParam) : null;
-  const selectedCity = cityParam ? Number(cityParam) : null;
 
   // State untuk search
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,6 +64,7 @@ export default function CatalogPage() {
     } else {
       params.set("category", String(catId));
     }
+    params.set("page", "1"); // Reset ke halaman 1 saat filter
     router.push(`/boardinghouse/catalog?${params.toString()}`);
   };
   const handleCityClick = (cityId: number | null) => {
@@ -60,6 +74,14 @@ export default function CatalogPage() {
     } else {
       params.set("city", String(cityId));
     }
+    params.set("page", "1"); // Reset ke halaman 1 saat filter
+    router.push(`/boardinghouse/catalog?${params.toString()}`);
+  };
+
+  // Handler untuk pagination
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
     router.push(`/boardinghouse/catalog?${params.toString()}`);
   };
 
@@ -187,6 +209,47 @@ export default function CatalogPage() {
             })
           )}
         </div>
+
+        {/* Pagination */}
+        {lastPage > 1 && (
+          <div className="flex justify-center mt-10 gap-2">
+            <button
+              className={`px-3 py-1 rounded border ${
+                currentPage === 1
+                  ? "bg-gray-300 text-gray-500"
+                  : "bg-white text-secondary"
+              }`}
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Previous
+            </button>
+            {[...Array(lastPage)].map((_, idx) => (
+              <button
+                key={idx + 1}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === idx + 1
+                    ? "bg-secondary text-white"
+                    : "bg-white text-secondary"
+                }`}
+                onClick={() => handlePageChange(idx + 1)}
+              >
+                {idx + 1}
+              </button>
+            ))}
+            <button
+              className={`px-3 py-1 rounded border ${
+                currentPage === lastPage
+                  ? "bg-gray-300 text-gray-500"
+                  : "bg-white text-secondary"
+              }`}
+              disabled={currentPage === lastPage}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );

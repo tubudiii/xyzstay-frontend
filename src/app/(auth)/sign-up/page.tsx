@@ -61,9 +61,17 @@ function SignUp() {
         router.push("/sign-in");
       }
     } catch (error: any) {
+      // Cek jika error karena email sudah terdaftar
+      const emailTakenMsg =
+        error?.data?.message?.toLowerCase().includes("email") &&
+        (error?.data?.message?.toLowerCase().includes("terdaftar") ||
+          error?.data?.message?.toLowerCase().includes("already"));
+
       toast({
-        title: "Something went wrong",
-        description: error.data?.message || "Registrasi gagal.",
+        title: emailTakenMsg ? "Email sudah terdaftar" : "Something went wrong",
+        description: emailTakenMsg
+          ? "Email yang Anda masukkan sudah terdaftar. Silakan gunakan email lain atau login."
+          : error.data?.message || "Registrasi gagal.",
         variant: "destructive",
       });
     }

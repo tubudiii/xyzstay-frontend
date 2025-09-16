@@ -64,15 +64,36 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        id: token.id as number,
-        name: token.name as string,
-        email: token.email as string,
-        phone_number: token.phone_number as string,
-        token: token.token as string,
-      };
-      return session;
+      // Validasi user masih ada di database
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/user/${token.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.token}`,
+            },
+          }
+        );
+        const userData = res.data?.data;
+        if (!userData) {
+          // User sudah dihapus, kosongkan session.user
+          session.user = undefined;
+          return session;
+        }
+        session.user = {
+          ...session.user,
+          id: token.id as number,
+          name: token.name as string,
+          email: token.email as string,
+          phone_number: token.phone_number as string,
+          token: token.token as string,
+        };
+        return session;
+      } catch (err) {
+        // Jika error (misal user tidak ditemukan), kosongkan session.user
+        session.user = undefined;
+        return session;
+      }
     },
   },
 };
