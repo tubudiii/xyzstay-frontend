@@ -82,7 +82,12 @@ function SignUp() {
       className={`px-6 py-24 lg:px-28 bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/bg-image.svg')] h-screen flex items-center`}
     >
       <div className="p-8 bg-white rounded-[30px] max-w-full lg:max-w-[460px] lg:min-w-[460px] space-y-[30px]">
-        <Image src="/images/logo.svg" alt="nidejia" height={36} width={133} />
+        <Image
+          src="/images/logo xyz.png"
+          alt="xyzstay"
+          height={36}
+          width={133}
+        />
         <Title
           title="Create Account"
           subtitle="Rent and make money online"

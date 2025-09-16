@@ -8,7 +8,12 @@ function SideMenu() {
   return (
     <nav className="bg-white w-full max-w-[250px] px-6 py-[30px] rounded-[20px] h-fit">
       <Link href="/">
-        <Image src="/images/logo.svg" alt="nidejia" height={36} width={133} />
+        <Image
+          src="/images/logo xyz.png"
+          alt="xyzstay"
+          height={36}
+          width={133}
+        />
       </Link>
 
       <div className="mt-[37.5px]">

@@ -49,7 +49,7 @@ function SignIn() {
         redirect: false, // biar kita handle routing manual
         callbackUrl: searchParams.get("callbackUrl") || "/",
       });
-      console.log("🚀 ~ onSubmit ~ loginRes:", loginRes)
+      console.log("🚀 ~ onSubmit ~ loginRes:", loginRes);
 
       if (loginRes?.error) {
         // Deteksi error email belum diverifikasi (sesuaikan dengan respon dari backend)
@@ -90,7 +90,12 @@ function SignIn() {
       className={`px-6 py-24 lg:px-28 bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/bg-image.svg')] h-screen flex items-center`}
     >
       <div className="p-8 bg-white rounded-[30px] max-w-full lg:max-w-[460px] lg:min-w-[460px] space-y-[30px]">
-        <Image src="/images/logo.svg" alt="nidejia" height={36} width={133} />
+        <Image
+          src="/images/logo xyz.png"
+          alt="xyzstay"
+          height={36}
+          width={133}
+        />
         <Title
           title="Sign In"
           subtitle="Rent and make money online"

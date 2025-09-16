@@ -59,8 +59,8 @@ function Footer() {
         <Separator className="my-[50px] bg-separator-foreground" />
         <div className="flex items-center justify-between">
           <Image
-            src="/images/logo-white.svg"
-            alt="nidejia"
+            src="/images/logo-white.png"
+            alt="xyzstay"
             height={36}
             width={133}
           />

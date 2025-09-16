@@ -96,7 +96,7 @@ function MyTransactions() {
             ✕
           </button>
           <div className="px-10 pt-10 pb-6 border-b flex items-center gap-3">
-            <img src="/public/logo.svg" alt="Logo" className="h-10 w-10" />
+            <img src="/public/logo xyz.png" alt="Logo" className="h-10 w-10" />
             <h2 className="text-2xl font-bold tracking-wide text-gray-800">
               INVOICE
             </h2>
