@@ -112,7 +112,7 @@ function BookingSection({
         {/* Dropdown Room */}
         <div className="mb-2">
           <label htmlFor="room-select" className="block mb-1 font-medium">
-            Pilih Kamar
+            Select Room
           </label>
           <select
             id="room-select"
@@ -121,7 +121,7 @@ function BookingSection({
             onChange={(e) => setSelectedRoomId(Number(e.target.value))}
           >
             <option value="" disabled>
-              Pilih kamar...
+              -- Choose a room --
             </option>
             {rooms
               .filter((room) => room.is_available === 1)
@@ -236,14 +236,14 @@ function BookingSection({
                     setAgree(false);
                   }}
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   className="flex-1 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
                   onClick={handleAgreeAndBook}
                   disabled={!agree}
                 >
-                  Setuju & Lanjutkan
+                  Accepted
                 </button>
               </div>
             </div>

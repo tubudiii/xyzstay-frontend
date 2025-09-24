@@ -53,8 +53,9 @@ function SignUp() {
 
       if (res.success) {
         toast({
-          title: "Registrasi Berhasil",
-          description: "Silakan cek email Anda untuk verifikasi sebelum login.",
+          title: "Registration successful",
+          description:
+            "Please check your email for verification before logging in.",
           open: true,
         });
         // form.reset();
@@ -64,14 +65,16 @@ function SignUp() {
       // Cek jika error karena email sudah terdaftar
       const emailTakenMsg =
         error?.data?.message?.toLowerCase().includes("email") &&
-        (error?.data?.message?.toLowerCase().includes("terdaftar") ||
+        (error?.data?.message?.toLowerCase().includes("taken") ||
           error?.data?.message?.toLowerCase().includes("already"));
 
       toast({
-        title: emailTakenMsg ? "Email sudah terdaftar" : "Something went wrong",
+        title: emailTakenMsg
+          ? "Email is already taken"
+          : "Something went wrong",
         description: emailTakenMsg
-          ? "Email yang Anda masukkan sudah terdaftar. Silakan gunakan email lain atau login."
-          : error.data?.message || "Registrasi gagal.",
+          ? "Please use a different email or log in."
+          : error.data?.message || "Registration failed.",
         variant: "destructive",
       });
     }
@@ -79,7 +82,7 @@ function SignUp() {
 
   return (
     <div
-      className={`px-6 py-24 lg:px-28 bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/bg-image.svg')] h-screen flex items-center`}
+      className={`px-6 py-24 lg:px-28 bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/avatar-3d.png')] h-screen flex items-center`}
     >
       <div className="p-8 bg-white rounded-[30px] max-w-full lg:max-w-[460px] lg:min-w-[460px] space-y-[30px]">
         <Image

@@ -3,7 +3,21 @@ import { moneyFormat } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-function CardDeals({ image, title, slug, price, wide, capacity }: DealsProps) {
+interface CardDealsProps extends DealsProps {
+  rating?: number;
+  showRating?: boolean;
+}
+
+function CardDeals({
+  image,
+  title,
+  slug,
+  price,
+  wide,
+  capacity,
+  rating,
+  showRating,
+}: CardDealsProps) {
   return (
     <Link href={slug}>
       <figure className="relative">
@@ -34,16 +48,19 @@ function CardDeals({ image, title, slug, price, wide, capacity }: DealsProps) {
                   /mo
                 </span>
               </div>
-              <div className="flex items-center text-sm leading-[21px]">
-                <Image
-                  src="/icons/star.svg"
-                  alt="star-icon"
-                  height={0}
-                  width={0}
-                  className="w-5 h-5 mr-[0.5px] -mt-1"
-                />
-                4/5
-              </div>
+              {/* ✅ hanya render kalau showRating true */}
+              {showRating && rating !== undefined && (
+                <div className="flex items-center text-sm leading-[21px]">
+                  <Image
+                    src="/icons/star.svg"
+                    alt="star-icon"
+                    height={0}
+                    width={0}
+                    className="w-5 h-5 mr-[0.5px] -mt-1"
+                  />
+                  {rating.toFixed(1)}/5
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-between mt-[14px]">

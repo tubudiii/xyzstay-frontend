@@ -65,11 +65,16 @@ function Home() {
   } = useGetAllCategoriesQuery(null);
   const categories = categoriesData?.data || [];
 
-  // Ambil data boarding house dari semua city dan category
-  const boardingHouses = [
+  // Ambil data boarding house dari semua city dan category, pastikan unik
+  const allBoardingHouses = [
     ...cities.flatMap((city: City) => city.boarding_houses || []),
     ...categories.flatMap((cat: any) => cat.boarding_houses || []),
   ];
+  // Filter agar hanya boarding house dengan id unik
+  const boardingHouses = allBoardingHouses.filter(
+    (bh, idx, arr) =>
+      bh?.id && arr.findIndex((item) => item?.id === bh?.id) === idx
+  );
 
   // Fungsi handle search
   const handleSearch = () => {
@@ -112,13 +117,13 @@ function Home() {
       {/* HERO */}
       <section
         id="hero-section"
-        className={`bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/bg-image.svg')] min-h-[750px] max-h-[750px] xl:max-h-[850px]`}
+        className={`bg-primary-foreground bg-cover lg:bg-contain bg-right bg-no-repeat bg-[url('/images/avatar-3d.png')] min-h-[750px] max-h-[750px] xl:max-h-[850px]`}
       >
         <div className="pt-[226px] container mx-auto">
           <div className="max-w-[555px]">
             <Title
               title="Find Glorious Living And Loving Space"
-              subtitle="Dolor house comfortable si amet with cheap price that also lorem when you need grow."
+              subtitle="Discover comfortable, affordable boarding houses for every lifestyle. Your new home is just a search away."
               section="hero"
             />
             <div className="pt-[50px] flex items-center">
@@ -147,31 +152,40 @@ function Home() {
         className="px-10 xl:container xl:mx-auto -mt-16 pb-9"
       >
         <div className="h-[128px] flex justify-center xl:justify-between items-center space-x-6 xl:space-x-12 bg-white shadow-indicator rounded-[20px] px-9 py-5 xl:px-[50px] xl:py-[29px]">
+          {/* Boarding House Indicator */}
           <CardIndicator
             icon="/icons/house-2.svg"
-            title="382M"
-            subtitle="Kos Available"
+            title={
+              boardingHouses.length
+                ? boardingHouses.length.toLocaleString()
+                : "0"
+            }
+            subtitle="Boarding Houses Available"
             variant="indicator"
           />
           <Separator orientation="vertical" className="bg-separator" />
+          {/* Customer Satisfaction Indicator */}
           <CardIndicator
             icon="/icons/people-2.svg"
-            title="9/10"
-            subtitle="People Happy"
+            title={
+              patchedTestimonials.length
+                ? (
+                    patchedTestimonials.reduce(
+                      (acc, cur) => acc + (cur.rating || 0),
+                      0
+                    ) / patchedTestimonials.length
+                  ).toFixed(1)
+                : "-"
+            }
+            subtitle="Customer Satisfaction"
             variant="indicator"
           />
           <Separator orientation="vertical" className="bg-separator" />
+          {/* Security Indicator (tetap hardcoded jika tidak ada data) */}
           <CardIndicator
             icon="/icons/security-user.svg"
             title="100%"
             subtitle="High Security"
-            variant="indicator"
-          />
-          <Separator orientation="vertical" className="bg-separator" />
-          <CardIndicator
-            icon="/icons/global.svg"
-            title="183"
-            subtitle="Countries"
             variant="indicator"
           />
         </div>
@@ -201,11 +215,11 @@ function Home() {
               </div>
             ) : errorCities ? (
               <div className="col-span-3 xl:col-span-4 text-center text-red-400">
-                Gagal memuat data kota.
+                Failed to load cities.
               </div>
             ) : cities.length === 0 ? (
               <div className="col-span-3 xl:col-span-4 text-center text-gray-400">
-                Belum ada data kota.
+                No cities yet.
               </div>
             ) : (
               cities.map((city: City) => {
@@ -275,11 +289,11 @@ function Home() {
               <div className="w-full text-center text-gray-400">Loading...</div>
             ) : errorCategories ? (
               <div className="w-full text-center text-red-400">
-                Gagal memuat data kategori.
+                Failed to load categories.
               </div>
             ) : categories.length === 0 ? (
               <div className="w-full text-center text-gray-400">
-                Belum ada data kategori.
+                No categories yet.
               </div>
             ) : (
               <Carousel className="w-full">
@@ -345,11 +359,11 @@ function Home() {
             </div>
           ) : isError ? (
             <div className="col-span-3 text-center text-red-400">
-              Gagal memuat testimonial.
+              Failed to load testimonials.
             </div>
           ) : patchedTestimonials.length === 0 ? (
             <div className="col-span-3 text-center text-gray-400">
-              Belum ada testimonial.
+              No testimonials yet.
             </div>
           ) : (
             patchedTestimonials.map((item: Testimonial) => (
@@ -357,7 +371,7 @@ function Home() {
                 key={item.id}
                 rating={item.rating}
                 review={item.content}
-                avatar={item.photo_url || "/images/avatar-review.svg"}
+                avatar={item.photo_url || "/images/avatar.webp"}
                 username={item.name}
                 jobdesk={"Customer"}
               />

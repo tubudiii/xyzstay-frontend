@@ -49,7 +49,7 @@ function BookingSuccess({ params }: { params: { id: string } }) {
             <h1 className="font-bold text-[22px] leading-[33px] text-secondary">
               {booking?.boarding_house?.name} - {booking?.room?.name}
             </h1>
-            <Badge variant="secondary">{booking?.payment_status}</Badge>
+            <Badge variant="secondary">{booking?.transactions_status}</Badge>
           </div>
         </div>
 
@@ -95,20 +95,22 @@ function BookingSuccess({ params }: { params: { id: string } }) {
         />
 
         <div className="mt-5 flex items-center space-x-2.5">
-          <Button
-            variant="default"
-            size="header"
-            className="flex items-center w-full max-w-[209px]"
-          >
-            <Image
-              src="/icons/message-notif.svg"
-              alt="message-notif"
-              height={0}
-              width={0}
-              className="h-5 w-5 mr-2.5"
-            />
-            Message Owner
-          </Button>
+          <Link href={"/dashboard/my-transactions"}>
+            <Button
+              variant="default"
+              size="header"
+              className="flex items-center w-full max-w-[209px]"
+            >
+              <Image
+                src="/icons/mytransaction.svg"
+                alt="message-notif"
+                height={0}
+                width={0}
+                className="h-5 w-5 mr-2.5"
+              />
+              My Transactions
+            </Button>
+          </Link>
           <Link href={"/"}>
             <Button
               variant="third"

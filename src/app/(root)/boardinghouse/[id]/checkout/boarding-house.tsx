@@ -5,6 +5,23 @@ import Image from "next/image";
 import React from "react";
 
 function BoardingHouse({ room }: { room: RoomWithBoardingHouse }) {
+  const backendUrl = process.env.NEXT_PUBLIC_STORAGE_BASE_URL || "";
+  // Build city image like on the home page
+  let cityImageSrc = room?.boarding_house?.city?.image as string | undefined;
+  if (cityImageSrc && !cityImageSrc.startsWith("http")) {
+    if (cityImageSrc.startsWith("/")) {
+      cityImageSrc = cityImageSrc.substring(1);
+    }
+    if (
+      cityImageSrc.startsWith("storage/") ||
+      cityImageSrc.startsWith("cities/")
+    ) {
+      cityImageSrc = `${backendUrl.replace(/\/$/, "")}/${cityImageSrc}`;
+    } else {
+      cityImageSrc = `${backendUrl.replace(/\/$/, "")}/storage/${cityImageSrc}`;
+    }
+  }
+  const cityIcon = cityImageSrc || "/icons/grey-skyline.svg";
   return (
     <div className="w-full max-w-[460px] h-fit p-[30px] space-y-5 bg-white rounded-[30px] shadow-indicator border border-border">
       {room?.images?.[0] && (
@@ -57,15 +74,15 @@ function BoardingHouse({ room }: { room: RoomWithBoardingHouse }) {
         </div>
       </div>
       <CardFacility
-        icon="/icons/weight.svg"
+        icon="/icons/room.svg"
         title="Room Name"
         subtitle={room?.name ?? "Unknown"}
       />
       <CardFacility
-        icon="/icons/grey-skyline.svg"
+        icon={cityIcon}
         title="City"
         subtitle={room?.boarding_house?.city?.name ?? "Unknown"}
-      />{" "}
+      />
     </div>
   );
 }

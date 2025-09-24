@@ -45,11 +45,11 @@ const Review: React.FC<ReviewProps> = ({ boardingHouseId }) => {
           <div className="col-span-3 text-center text-gray-400">Loading...</div>
         ) : isError ? (
           <div className="col-span-3 text-center text-red-400">
-            Gagal memuat testimonial.
+            failed to load testimonials.
           </div>
         ) : patchedTestimonials.length === 0 ? (
           <div className="col-span-3 text-center text-gray-400">
-            Belum ada testimonial.
+            No testimonials yet.
           </div>
         ) : (
           patchedTestimonials.map((item: Testimonial) => (
@@ -57,7 +57,7 @@ const Review: React.FC<ReviewProps> = ({ boardingHouseId }) => {
               key={item.id}
               rating={item.rating}
               review={item.content}
-              avatar={item.photo_url || "/images/avatar-review.svg"}
+              avatar={item.photo_url || "/images/avatar.webp"}
               username={item.name}
               jobdesk={"Customer"}
             />

@@ -106,14 +106,14 @@ function BoardingHouseShowcase({
       ) : isError ? (
         <div className="text-center text-red-400">
           {isRecommendation
-            ? "Gagal memuat rekomendasi."
-            : "Gagal memuat boarding house."}
+            ? "Failed to Load recomendation."
+            : "Failed to Load boarding house."}
         </div>
       ) : boardingHouses.length === 0 ? (
         <div className="text-center text-gray-400">
           {isRecommendation
-            ? "Belum ada rekomendasi untuk Anda."
-            : "Belum ada data boarding house."}
+            ? "No recommendations available for you."
+            : "No boarding house data available."}
         </div>
       ) : (
         <Carousel className="w-full mt-[30px]">
@@ -122,19 +122,22 @@ function BoardingHouseShowcase({
               const availableRooms = (house.rooms || []).filter(
                 (room: any) => room.is_available === 1
               );
+              const sortedRooms = availableRooms.sort(
+                (a: any, b: any) => a.price_per_day - b.price_per_day
+              );
               const cheapestRoom =
-                availableRooms.sort(
-                  (a: any, b: any) => a.price_per_day - b.price_per_day
-                )[0] || {};
+                sortedRooms.length > 0 ? sortedRooms[0] : null;
               return (
                 <CarouselItem key={index} className="basis-1/4">
                   <CardDeals
                     image={house.thumbnail?.[0] || ""}
                     title={house.name}
                     slug={`/boardinghouse/${house.slug}`}
-                    price={cheapestRoom.price_per_day}
-                    wide={cheapestRoom.square_feet}
-                    capacity={cheapestRoom.capacity}
+                    price={cheapestRoom ? cheapestRoom.price_per_day : "N/A"}
+                    wide={cheapestRoom ? cheapestRoom.square_feet : "N/A"}
+                    capacity={cheapestRoom ? cheapestRoom.capacity : "N/A"}
+                    rating={house.predicted_score} // ✅ langsung score prediksi
+                    showRating={isRecommendation} // ✅ kirim flag
                   />
                 </CarouselItem>
               );

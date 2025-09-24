@@ -1,6 +1,7 @@
 import { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
+const BACKEND_URL = "http://xyzstay-nginx/api";
 export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
@@ -31,7 +32,7 @@ export const authOptions: AuthOptions = {
       authorize: async (credentials, req) => {
         // Ambil data user terbaru dari backend
         try {
-          const res = await fetch("http://127.0.0.1:8000/api/login", {
+          const res = await fetch(`${BACKEND_URL}/login`, {
             method: "POST",
             body: JSON.stringify({
               email: credentials?.email,

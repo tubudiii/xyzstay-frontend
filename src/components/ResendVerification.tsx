@@ -13,20 +13,27 @@ export default function ResendVerification({ email }: { email: string }) {
         body: JSON.stringify({ email }),
       });
       if (res.ok) {
-        setMessage("Email verifikasi telah dikirim ulang. Silakan cek email Anda.");
+        setMessage(
+          "Verification email has been resent. Please check your inbox."
+        );
       } else {
-        setMessage("Gagal mengirim ulang email verifikasi.");
+        setMessage("Failed to resend verification email.");
       }
     } catch {
-      setMessage("Terjadi kesalahan. Silakan coba lagi.");
+      setMessage("An error occurred. Please try again.");
     }
     setLoading(false);
   };
 
   return (
     <div className="mt-4">
-      <button type="button" onClick={handleResend} disabled={loading} className="bg-primary text-white px-4 py-2 rounded">
-        {loading ? "Mengirim..." : "Kirim Ulang Email Verifikasi"}
+      <button
+        type="button"
+        onClick={handleResend}
+        disabled={loading}
+        className="bg-primary text-white px-4 py-2 rounded"
+      >
+        {loading ? "Sending..." : "Resend Verification Email"}
       </button>
       {message && <div className="mt-2 text-sm text-green-600">{message}</div>}
     </div>

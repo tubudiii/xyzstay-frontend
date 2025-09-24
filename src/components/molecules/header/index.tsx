@@ -22,7 +22,7 @@ function Header() {
   // ✅ Ambil session dari NextAuth
   const { data: session } = useSession();
   const user = session?.user; // langsung ambil user dari session
-
+  console.log(user);
   const { data, isLoading, isError } = useGetAllCategoriesQuery({});
   const {
     data: citiesData,
@@ -213,7 +213,7 @@ function Header() {
               <div className="flex items-center space-x-2">
                 <Title
                   title={user?.name ?? "User"}
-                  subtitle="Howdy"
+                  subtitle="Customer"
                   section="header"
                 />
                 <Image

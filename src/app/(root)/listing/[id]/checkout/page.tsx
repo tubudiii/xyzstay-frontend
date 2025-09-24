@@ -4,10 +4,8 @@ import CardBooking from "@/components/molecules/card/card-booking";
 import { Button } from "@/components/atomics/button";
 import { Separator } from "@/components/atomics/separator";
 import { Checkbox } from "@/components/atomics/checkbox";
-import { DatePickerDemo } from "@/components/molecules/date-picker";
 import Link from "next/link";
 import BoardingHouse from "./boarding-house";
-// import Review from "./review";
 
 function Checkout() {
   return (

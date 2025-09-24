@@ -5,13 +5,14 @@ import Title from "@/components/atomics/title";
 import { useSession } from "next-auth/react";
 import { useGetTransactionQuery } from "@/services/transaction.service";
 import { Transaction } from "@/interfaces/transaction";
+import Link from "next/link"; // ⬅️ tambah
 
 function Dashboard() {
   const { data: session } = useSession();
   const user = session?.user;
   const { data: transactions } = useGetTransactionQuery({});
-  // Filter transaksi milik user
-  const userTransactions =
+
+  const userTransactions: Transaction[] =
     transactions?.data?.data?.filter(
       (trx: Transaction) => trx.user_id === user?.id
     ) || [];
@@ -25,7 +26,6 @@ function Dashboard() {
           title="Overview"
           subtitle="You’ve made huge progres"
         />
-        <Button size="button">Export Report</Button>
       </div>
 
       <div className="mt-[40px]">
@@ -34,26 +34,19 @@ function Dashboard() {
         </h1>
 
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-[30px] mt-3.5">
-          <CardOverview
-            image="/icons/buildings.svg"
-            title="27,492"
-            subtitle="Listings"
-          />
-          <CardOverview
-            image="/icons/building.svg"
-            title="6,482"
-            subtitle="Rentals"
-          />
-          <CardOverview
-            image="/icons/profile-2user-fill.svg"
-            title="84,209,199"
-            subtitle="Customers"
-          />
-          <CardOverview
-            image="/icons/card.svg"
-            title={userTransactionCount.toLocaleString()}
-            subtitle="Transactions"
-          />
+          <Link
+            href="/dashboard/my-transactions"
+            className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 rounded-2xl"
+            aria-label="Lihat semua transaksi"
+          >
+            <div className="transition hover:shadow-md hover:-translate-y-0.5 rounded-2xl">
+              <CardOverview
+                image="/icons/card.svg"
+                title={userTransactionCount.toLocaleString()}
+                subtitle="Transactions"
+              />
+            </div>
+          </Link>
         </div>
       </div>
     </main>

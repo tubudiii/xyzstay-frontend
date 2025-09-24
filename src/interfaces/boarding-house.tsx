@@ -3,6 +3,8 @@
 export interface City {
   id: number;
   name: string;
+  // Optional image URL or storage path for the city icon/thumbnail
+  image?: string;
 }
 
 export interface Category {

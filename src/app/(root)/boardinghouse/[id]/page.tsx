@@ -131,7 +131,7 @@ function Detail({ params }: { params: { id: string } }) {
               subtitle={
                 selectedRoomId !== null && selectedRoom
                   ? selectedRoom.room_type
-                  : "Pilih kamar terlebih dahulu"
+                  : "Select a room to see details"
               }
             />
             <CardFacility

@@ -2,22 +2,23 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
+const BACKEND_URL = "http://xyzstay-nginx/api";
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         try {
-          const res = await axios.post("http://127.0.0.1:8000/api/login", {
+          const res = await axios.post(`${BACKEND_URL}/login`, {
             email: credentials?.email,
             password: credentials?.password,
           });
 
-          const data = res.data?.data; // ✅ ambil dari "data"
+          const data = res.data?.data;
 
           if (data?.token) {
             return {
@@ -25,12 +26,12 @@ export const authOptions: NextAuthOptions = {
               name: data.name,
               email: data.email,
               phone_number: data.phone_number,
-              token: data.token, // ✅ ini token user
+              token: data.token,
             };
           }
           return null;
         } catch (err: any) {
-          console.error("Login error", err.response?.data || err.message);
+          console.error("Login error:", err.response?.data || err.message);
           return null;
         }
       },
@@ -64,36 +65,19 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // Validasi user masih ada di database
-      try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/api/user/${token.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token.token}`,
-            },
-          }
-        );
-        const userData = res.data?.data;
-        if (!userData) {
-          // User sudah dihapus, kosongkan session.user
-          session.user = undefined;
-          return session;
-        }
+      // Ambil data user dari token saja, jangan validasi ke backend
+      if (token && token.id) {
         session.user = {
-          ...session.user,
-          id: token.id as number,
-          name: token.name as string,
-          email: token.email as string,
-          phone_number: token.phone_number as string,
-          token: token.token as string,
+          id: token.id,
+          name: token.name,
+          email: token.email,
+          phone_number: token.phone_number,
+          token: token.token,
         };
-        return session;
-      } catch (err) {
-        // Jika error (misal user tidak ditemukan), kosongkan session.user
+      } else {
         session.user = undefined;
-        return session;
       }
+      return session;
     },
   },
 };

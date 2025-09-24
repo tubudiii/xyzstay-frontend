@@ -53,24 +53,24 @@ export function MidtransTrigger(props: MidtransPaymentProps) {
         window.snap.pay(transactionToken, {
           onSuccess: (result) => {
             toast({
-              title: "Pembayaran Berhasil",
-              description: "Transaksi berhasil diproses.",
+              title: "Transaction Successful",
+              description: "Transaction has been successfully processed.",
               variant: "default",
             });
             onSuccess?.(result);
           },
           onPending: (result) => {
             toast({
-              title: "Pembayaran Pending",
-              description: "Transaksi sedang diproses.",
+              title: "Transaction Pending",
+              description: "Transaction is being processed.",
               variant: "default",
             });
             onPending?.(result);
           },
           onError: (error) => {
             toast({
-              title: "Pembayaran Gagal",
-              description: "Terjadi kesalahan pada transaksi.",
+              title: "Transaction Failed",
+              description: "An error occurred during the transaction.",
               variant: "destructive",
             });
             onError?.(error);

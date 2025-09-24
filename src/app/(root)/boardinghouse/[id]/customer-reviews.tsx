@@ -46,7 +46,7 @@ const CustomerReviews: React.FC<CustomerReviewsProps> = ({
               key={testimonial.id}
               rating={testimonial.rating}
               review={testimonial.content}
-              avatar={testimonial.photo_url || "/images/avatar-review.svg"}
+              avatar={testimonial.photo_url || "/images/avatar.webp"}
               username={testimonial.name}
               jobdesk={"Customer"}
             />

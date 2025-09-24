@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    container_name: xyzstay-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped 
+    environment:
+      - NEXT_FORCE_SWCRC=1
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+    external: true

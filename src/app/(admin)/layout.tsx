@@ -20,17 +20,18 @@ export const metadata: Metadata = {
   },
 };
 
+// root layout
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={poppins.className}>
+      <body className={`${poppins.className} min-h-dvh bg-gray-light`}>
         <ReduxProvider>
           <UserProvider>
-            <div className="bg-gray-light">
+            <div className="min-h-dvh">
               <div className="flex space-x-[30px] p-[30px] container mx-auto">
                 <SideMenu />
                 <div className="w-full">

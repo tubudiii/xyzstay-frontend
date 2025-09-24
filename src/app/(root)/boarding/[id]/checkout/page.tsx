@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/atomics/checkbox";
 import { DatePickerDemo } from "@/components/molecules/date-picker";
 import Link from "next/link";
 import BoardingHouse from "./boarding-house";
-import Review from "./review";
+import Review from "@/app/(root)/boardinghouse/[id]/checkout/review";
 
 function Checkout() {
   return (
@@ -33,10 +33,7 @@ function Checkout() {
               Booking Informations
             </h1>
             <div className="rounded-[30px] mt-2.5 p-[30px] bg-white border border-border shadow-indicator space-y-5">
-              <div className="space-y-5">
-                <DatePickerDemo />
-                <DatePickerDemo />
-              </div>
+              <div className="space-y-5"></div>
               <div className="space-y-5">
                 <CardBooking title="Total days" value="30 days" />
                 <CardBooking title="Sub total" value="$83,422" />
@@ -103,7 +100,7 @@ function Checkout() {
           </div>
         </div>
       </section>
-      <Review />
+      <Review boardingHouseId={123} />
     </main>
   );
 }

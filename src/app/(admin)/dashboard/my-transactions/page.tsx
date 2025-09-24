@@ -8,8 +8,6 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/atomics/button";
 import Title from "@/components/atomics/title";
-import DataTransaction from "@/json/city-transaction.json";
-import { CityCenterProps } from "@/interfaces/city-center";
 import {
   Pagination,
   PaginationContent,
@@ -18,49 +16,49 @@ import {
   PaginationLink,
 } from "@/components/atomics/pagination";
 import CardTransaction from "@/components/molecules/card/card-transaction";
-import { CityTransactionProps } from "@/interfaces/city-transaction";
 import CardEmpty from "@/components/molecules/card/card-empty";
 import { useGetTransactionQuery } from "@/services/transaction.service";
 import { Transaction } from "@/interfaces/transaction";
+import { useSearchParams } from "next/navigation"; // ⬅️ tambah
 
 function MyTransactions() {
   const { toast } = useToast();
   const { data: transactions, refetch } = useGetTransactionQuery({});
   const { data: session } = useSession();
   const user = session?.user;
+
+  const searchParams = useSearchParams(); // ⬅️ ambil query
+  const search = (searchParams.get("search") || "").toLowerCase();
+
+  const allTransactions: Transaction[] = transactions?.data?.data ?? [];
+  const filteredTransactions = !search
+    ? allTransactions
+    : allTransactions.filter((t) => {
+        const p = t.payments?.[0];
+        const haystacks = [
+          t.code,
+          t.transactions_status,
+          t.room?.name,
+          t.boarding_house?.name,
+          t.boarding_house?.address,
+          p?.id,
+          p?.payment_status,
+        ]
+          .filter(Boolean)
+          .map((x) => String(x).toLowerCase());
+        return haystacks.some((h) => h.includes(search));
+      });
+
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [testimonialTransaction, setTestimonialTransaction] =
     useState<Transaction | null>(null);
-  // Hapus state testimonial dari parent, pindahkan ke modal
-  // Komponen Star Rating
-  const StarRating = ({
-    value,
-    onChange,
-  }: {
-    value: number;
-    onChange: (val: number) => void;
-  }) => (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`cursor-pointer text-2xl ${
-            star <= value ? "text-yellow-400" : "text-gray-300"
-          }`}
-          onClick={() => onChange(star)}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  );
 
   // Modal Invoice State
   const [showInvoice, setShowInvoice] = React.useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     React.useState<Transaction | null>(null);
 
-  // Invoice Modal Component
+  // ====== InvoiceModal (tidak berubah) ======
   const InvoiceModal = ({
     transaction,
     onClose,
@@ -69,10 +67,8 @@ function MyTransactions() {
     onClose: () => void;
   }) => {
     const p = transaction.payments?.[0];
-    // Ref untuk invoice
     const invoiceRef = React.useRef<HTMLDivElement>(null);
 
-    // Fungsi download PDF
     const handleDownloadPDF = async () => {
       if (!invoiceRef.current) return;
       const canvas = await html2canvas(invoiceRef.current);
@@ -96,7 +92,6 @@ function MyTransactions() {
             ✕
           </button>
           <div className="px-10 pt-10 pb-6 border-b flex items-center gap-3">
-            <img src="/public/logo xyz.png" alt="Logo" className="h-10 w-10" />
             <h2 className="text-2xl font-bold tracking-wide text-gray-800">
               INVOICE
             </h2>
@@ -104,62 +99,62 @@ function MyTransactions() {
           <div ref={invoiceRef} className="px-10 py-8 bg-white">
             <div className="mb-6 flex flex-col gap-1">
               <span className="text-sm text-gray-500">
-                Tanggal:{" "}
+                Date:{" "}
                 {new Date(
                   transaction.created_at ?? Date.now()
                 ).toLocaleDateString()}
               </span>
               <span className="text-sm text-gray-500">
-                Kode Transaksi:{" "}
+                Transaction Code:{" "}
                 <span className="font-semibold text-blue-700">
                   {transaction.code ?? "-"}
                 </span>
               </span>
               <span className="text-sm text-gray-500">
-                ID Transaksi:{" "}
+                Transaction ID:{" "}
                 <span className="font-semibold">{transaction.id}</span>
               </span>
             </div>
             <div className="mb-6">
               <div className="font-semibold text-lg text-gray-700 mb-2">
-                Detail Penginapan
+                Accommodation Details
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="text-gray-600">Nama Penginapan:</div>
+                <div className="text-gray-600">Accommodation Name:</div>
                 <div className="font-medium">
                   {transaction.boarding_house.name}
                 </div>
-                <div className="text-gray-600">Alamat:</div>
+                <div className="text-gray-600">Address:</div>
                 <div className="font-medium">
                   {transaction.boarding_house.address}
                 </div>
-                <div className="text-gray-600">Nama Kamar:</div>
+                <div className="text-gray-600">Room Name:</div>
                 <div className="font-medium">{transaction.room.name}</div>
-                <div className="text-gray-600">Durasi:</div>
-                <div className="font-medium">{transaction.total_days} hari</div>
+                <div className="text-gray-600">Length of Stay:</div>
+                <div className="font-medium">{transaction.total_days} days</div>
               </div>
             </div>
             <div className="mb-6">
               <div className="font-semibold text-lg text-gray-700 mb-2">
-                Detail Pembayaran
+                Payment Details
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="text-gray-600">Harga:</div>
+                <div className="text-gray-600">Price:</div>
                 <div className="font-medium">
                   Rp{transaction.total_price.toLocaleString()}
                 </div>
-                <div className="text-gray-600">Status Pembayaran:</div>
+                <div className="text-gray-600">Payment Status:</div>
                 <div className="font-medium capitalize">
                   {p?.payment_status ?? "-"}
                 </div>
-                <div className="text-gray-600">ID Pembayaran:</div>
+                <div className="text-gray-600">Payment ID:</div>
                 <div className="font-medium">{p?.id ?? "-"}</div>
               </div>
             </div>
             <div className="border-t pt-4 flex flex-col gap-1">
               <span className="text-xs text-gray-400">
-                Terima kasih telah melakukan transaksi di XYZStay. Invoice ini
-                dapat digunakan sebagai bukti pembayaran yang sah.
+                Thank you for making a transaction at XYZStay. This invoice can
+                be used as valid proof of payment.
               </span>
             </div>
           </div>
@@ -179,17 +174,20 @@ function MyTransactions() {
         <Title
           section="admin"
           title="My Transactions"
-          subtitle="Manage your house and get money"
+          subtitle={
+            search
+              ? `Showing results for "${search}"`
+              : "Manage your house and get money"
+          }
         />
       </div>
 
       <div className="mt-[30px] space-y-5">
-        {transactions?.data?.total ? (
-          transactions?.data?.data.map(
+        {filteredTransactions.length > 0 ? (
+          filteredTransactions.map(
             (transaction: Transaction, index: number) => {
               const p = transaction.payments?.[0];
               const isSuccess = p?.payment_status === "success";
-              // Cari testimonial user pada boarding house
               const userTestimonial =
                 transaction.boarding_house?.testimonials?.find(
                   (t) => t.user_id === user?.id
@@ -198,7 +196,7 @@ function MyTransactions() {
                 <div key={index} className="relative">
                   <CardTransaction
                     id_payment={p?.id ?? null}
-                    status_payment={transaction.payments[0]?.payment_status}
+                    status_payment={transaction.payments?.[0]?.payment_status}
                     id={transaction.id}
                     room={{
                       images: [
@@ -232,7 +230,7 @@ function MyTransactions() {
                       >
                         {userTestimonial
                           ? "Edit Testimonial"
-                          : "Beri Testimonial"}
+                          : "Give Testimonial"}
                       </Button>
                     </div>
                   )}
@@ -259,8 +257,7 @@ function MyTransactions() {
           onClose={async (action) => {
             if (action === "refetch") {
               await refetch();
-              // Cari transaksi terbaru dari hasil refetch
-              const latestTransaction = transactions?.data?.data.find(
+              const latestTransaction = (transactions?.data?.data ?? []).find(
                 (t: Transaction) => t.id === testimonialTransaction.id
               );
               if (latestTransaction) {
