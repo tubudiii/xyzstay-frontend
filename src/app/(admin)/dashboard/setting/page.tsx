@@ -30,7 +30,7 @@ export default function SettingPage() {
       if (!session?.user?.id) return;
       try {
         const res = await axios.get(
-          `http://127.0.0.1:8000/api/user/${session.user.id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/${session.user.id}`,
           {
             withCredentials: true,
             headers: {
@@ -121,7 +121,7 @@ export default function SettingPage() {
 
       // refresh profil setelah update
       const userRes = await axios.get(
-        `http://127.0.0.1:8000/api/user/${session.user.id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/${session.user.id}`,
         {
           withCredentials: true,
           headers: {

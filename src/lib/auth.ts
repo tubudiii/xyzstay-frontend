@@ -1,7 +1,7 @@
 import { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-const BACKEND_URL = "http://xyzstay-nginx/api";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
