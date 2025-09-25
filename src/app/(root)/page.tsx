@@ -331,6 +331,7 @@ function Home() {
                               ? cat.boarding_houses.length.toLocaleString()
                               : "0"
                           }
+                          href={`/boardinghouse/catalog?category=${cat.id}`}
                         />
                       </div>
                     );

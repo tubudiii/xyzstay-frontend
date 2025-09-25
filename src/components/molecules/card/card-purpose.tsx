@@ -5,17 +5,21 @@ function CardPurpose({
   image,
   title,
   purpose,
+  href,
 }: {
   image: string;
   title: string;
   purpose: string;
+  href?: string;
 }) {
   // Ikuti pola CardDeals dan BoardingHouseShowcase
   const imageSrc = image?.startsWith("http")
     ? image
     : `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${image}`;
+  const targetHref =
+    href || `/boardinghouse/catalog?category=${encodeURIComponent(title)}`;
   return (
-    <Link href={`/categories/${title.toLowerCase().replace(/ /g, "-")}`}>
+    <Link href={targetHref}>
       {" "}
       {/* Ganti sesuai kebutuhan slug */}
       <figure className="relative mx-3 rounded-3xl overflow-hidden shadow-lg w-[310px] h-[200px] flex-shrink-0 cursor-pointer hover:scale-[1.03] transition-transform duration-200">

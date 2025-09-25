@@ -3,6 +3,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// Prefer reading secret from env; allow a safe dev fallback to avoid local crashes
+const NEXTAUTH_SECRET =
+  process.env.NEXTAUTH_SECRET ||
+  (process.env.NODE_ENV !== "production" ? "dev-secret" : undefined);
 const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -80,6 +84,8 @@ const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  // Ensure NextAuth has a secret in production
+  secret: NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
