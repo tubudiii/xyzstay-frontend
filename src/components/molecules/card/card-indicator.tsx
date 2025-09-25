@@ -52,9 +52,22 @@ function CardIndicator({
             height={32}
             width={32}
             style={{ objectFit: "cover", borderRadius: "8px" }}
+            unoptimized={
+              !imageSrc.startsWith("/") &&
+              !imageSrc.startsWith("http://localhost")
+            }
           />
         ) : (
-          <Image src={imageSrc} alt="icon" height={32} width={32} />
+          <Image
+            src={imageSrc}
+            alt="icon"
+            height={32}
+            width={32}
+            unoptimized={
+              !imageSrc.startsWith("/") &&
+              !imageSrc.startsWith("http://localhost")
+            }
+          />
         )}
       </div>
       <div>

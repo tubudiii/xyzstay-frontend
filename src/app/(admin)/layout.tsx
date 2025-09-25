@@ -1,4 +1,3 @@
-import React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "@/app/globals.css";
@@ -36,10 +35,8 @@ export default function RootLayout({
               <div className="flex space-x-[30px] p-[30px] container mx-auto">
                 <SideMenu />
                 <div className="w-full">
-                  <React.Suspense fallback={<div />}>
-                    <TopMenu />
-                    <div className="py-[30px]">{children}</div>
-                  </React.Suspense>
+                  <TopMenu />
+                  <div className="py-[30px]">{children}</div>
                 </div>
               </div>
             </div>

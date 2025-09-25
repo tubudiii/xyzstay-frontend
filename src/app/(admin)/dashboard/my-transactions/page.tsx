@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import React, { useState } from "react";
 import { useToast } from "@/components/atomics/use-toast";
 import { useSession } from "next-auth/react";

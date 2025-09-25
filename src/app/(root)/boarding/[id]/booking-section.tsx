@@ -5,16 +5,12 @@ import { DatePickerDemo } from "@/components/molecules/date-picker";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useState } from "react";
 
 interface BookingSectionProps {
   id: string;
 }
 
 function BookingSection({ id }: BookingSectionProps) {
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-
   return (
     <div className="w-full max-w-[360px] xl:max-w-[400px] h-fit space-y-5 bg-white border border-border rounded-[20px] p-[30px] shadow-indicator">
       <h1 className="font-bold text-lg leading-[27px] text-secondary">
@@ -25,16 +21,8 @@ function BookingSection({ id }: BookingSectionProps) {
         /day
       </span>
       <div className="space-y-5">
-        <DatePickerDemo
-          placeholder="Check-in"
-          date={startDate}
-          setDate={setStartDate}
-        />
-        <DatePickerDemo
-          placeholder="Check-out"
-          date={endDate}
-          setDate={setEndDate}
-        />
+        <DatePickerDemo placeholder="Select start date" setDate={() => {}} />
+        <DatePickerDemo placeholder="Select end date" setDate={() => {}} />
       </div>
       <div className="space-y-5">
         <CardBooking title="Total days" value="30 days" />

@@ -39,21 +39,6 @@ export function MidtransTrigger(props: MidtransPaymentProps) {
   const hasRun = useRef(false);
   const { toast } = useToast();
 
-  // Keep stable refs to callbacks so they can be safely used in effect deps
-  const onSuccessRef = useRef(onSuccess);
-  const onPendingRef = useRef(onPending);
-  const onErrorRef = useRef(onError);
-  const onCloseRef = useRef(onClose);
-  const toastRef = useRef(toast);
-
-  useEffect(() => {
-    onSuccessRef.current = onSuccess;
-    onPendingRef.current = onPending;
-    onErrorRef.current = onError;
-    onCloseRef.current = onClose;
-    toastRef.current = toast;
-  }, [onSuccess, onPending, onError, onClose, toast]);
-
   useEffect(() => {
     if (!transactionToken || hasRun.current) return;
 
@@ -67,30 +52,30 @@ export function MidtransTrigger(props: MidtransPaymentProps) {
         hasRun.current = true;
         window.snap.pay(transactionToken, {
           onSuccess: (result) => {
-            toastRef.current?.({
+            toast({
               title: "Transaction Successful",
               description: "Transaction has been successfully processed.",
               variant: "default",
             });
-            onSuccessRef.current?.(result);
+            onSuccess?.(result);
           },
           onPending: (result) => {
-            toastRef.current?.({
+            toast({
               title: "Transaction Pending",
               description: "Transaction is being processed.",
               variant: "default",
             });
-            onPendingRef.current?.(result);
+            onPending?.(result);
           },
           onError: (error) => {
-            toastRef.current?.({
+            toast({
               title: "Transaction Failed",
               description: "An error occurred during the transaction.",
               variant: "destructive",
             });
-            onErrorRef.current?.(error);
+            onError?.(error);
           },
-          onClose: () => onCloseRef.current?.(),
+          onClose: () => onClose?.(),
         });
       } else {
         console.error("Midtrans snap not loaded");
@@ -99,7 +84,7 @@ export function MidtransTrigger(props: MidtransPaymentProps) {
 
     document.body.appendChild(script);
     return () => {
-      if (document.body.contains(script)) document.body.removeChild(script);
+      document.body.removeChild(script);
     };
   }, [clientKey, transactionToken]);
 

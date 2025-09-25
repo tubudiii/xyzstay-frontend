@@ -1,4 +1,3 @@
-import React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "@/app/globals.css";
@@ -31,7 +30,7 @@ export default function RootLayout({
         <ReduxProvider>
           <div className="lg:block hidden">
             <Header />
-            <React.Suspense fallback={<div />}>{children}</React.Suspense>
+            {children}
             <Footer />
           </div>
           <div className="block lg:hidden">
