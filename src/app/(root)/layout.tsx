@@ -5,6 +5,7 @@ import Header from "@/components/molecules/header";
 import Footer from "@/components/molecules/footer";
 import { Toaster } from "@/components/atomics/toaster";
 import ReduxProvider from "@/providers/redux";
+import React from "react";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -30,7 +31,7 @@ export default function RootLayout({
         <ReduxProvider>
           <div className="lg:block hidden">
             <Header />
-            {children}
+            <React.Suspense fallback={<div />}>{children}</React.Suspense>
             <Footer />
           </div>
           <div className="block lg:hidden">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "@/app/globals.css";
 import TopMenu from "@/components/molecules/admin/top-menu";
+import React from "react";
 import SideMenu from "@/components/molecules/admin/side-menu";
 import { Toaster } from "@/components/atomics/toaster";
 import ReduxProvider from "@/providers/redux";
@@ -35,7 +36,10 @@ export default function RootLayout({
               <div className="flex space-x-[30px] p-[30px] container mx-auto">
                 <SideMenu />
                 <div className="w-full">
-                  <TopMenu />
+                  <React.Suspense fallback={<div />}>
+                    {/* client-only top menu */}
+                    <TopMenu />
+                  </React.Suspense>
                   <div className="py-[30px]">{children}</div>
                 </div>
               </div>

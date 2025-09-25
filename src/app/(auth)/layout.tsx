@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "@/app/globals.css";
 import { Toaster } from "@/components/atomics/toaster";
+import React from "react";
 import ReduxProvider from "@/providers/redux";
 
 const inter = Poppins({
@@ -27,7 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ReduxProvider>
           <Toaster />
-          {children}
+          <React.Suspense fallback={<div />}>{children}</React.Suspense>
         </ReduxProvider>
       </body>
     </html>
