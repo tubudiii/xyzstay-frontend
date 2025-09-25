@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useUpdateProfileMutation } from "@/services/auth.service";
 import { useToast } from "@/components/atomics/use-toast"; // ⬅️ pakai toast
-
+import Image from "next/image";
 export default function SettingPage() {
   const { data: session, update } = useSession();
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
@@ -222,7 +222,7 @@ export default function SettingPage() {
             <section className="lg:col-span-1">
               <div className="flex flex-col items-center gap-4">
                 <div className="h-28 w-28 rounded-full ring-1 ring-gray-200 overflow-hidden bg-gray-50">
-                  <img
+                  <Image
                     src={session?.user?.avatar || "/images/avatar.webp"}
                     alt="Avatar"
                     className="h-full w-full object-cover"
@@ -306,7 +306,7 @@ export default function SettingPage() {
                       />
                     </div>
                     <p className="mt-2 text-xs text-gray-500">
-                      Leave blank if you don't want to change the password.
+                      Leave blank if you dont want to change the password.
                     </p>
                   </div>
                 </form>

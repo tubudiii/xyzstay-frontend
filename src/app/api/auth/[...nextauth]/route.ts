@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",

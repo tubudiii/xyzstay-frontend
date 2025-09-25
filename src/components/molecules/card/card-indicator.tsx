@@ -46,7 +46,7 @@ function CardIndicator({
         }
       >
         {section === "categories" ? (
-          <img
+          <Image
             src={imageSrc}
             alt="icon"
             height={32}
