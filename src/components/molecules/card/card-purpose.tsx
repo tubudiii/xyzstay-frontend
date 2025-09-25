@@ -14,9 +14,12 @@ function CardPurpose({
   const imageSrc = image?.startsWith("http")
     ? image
     : `${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${image}`;
+  const slug = encodeURIComponent(
+    title.toLowerCase().trim().replace(/\s+/g, "-")
+  );
+
   return (
-    <Link href={`/categories/${title.toLowerCase().replace(/ /g, "-")}`}>
-      {" "}
+    <Link href={`/categories/${slug}`}>
       {/* Ganti sesuai kebutuhan slug */}
       <figure className="relative mx-3 rounded-3xl overflow-hidden shadow-lg w-[310px] h-[200px] flex-shrink-0 cursor-pointer hover:scale-[1.03] transition-transform duration-200">
         <div className="w-full h-full rounded-3xl overflow-hidden">
