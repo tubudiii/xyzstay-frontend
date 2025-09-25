@@ -80,7 +80,6 @@ function BookingSection({
           `/boardinghouse/${selectedRoom.slug}/checkout?start_date=${data.start_date}&end_date=${data.end_date}`
         );
       }
-      console.log("🚀 ~ handleBook ~ res:", res);
     } catch (error: any) {
       if (error.status === 401) {
         toast({

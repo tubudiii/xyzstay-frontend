@@ -22,7 +22,6 @@ function Header() {
   // ✅ Ambil session dari NextAuth
   const { data: session } = useSession();
   const user = session?.user; // langsung ambil user dari session
-  console.log(user);
   const { data, isLoading, isError } = useGetAllCategoriesQuery({});
   const {
     data: citiesData,

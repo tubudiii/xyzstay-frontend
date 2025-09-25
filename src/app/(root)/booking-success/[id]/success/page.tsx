@@ -14,7 +14,6 @@ function BookingSuccess({ params }: { params: { id: string } }) {
   const { data } = useGetDetailTransactionQuery(params?.id);
 
   const booking: Transaction = useMemo(() => data?.data, [data]);
-  console.log("🚀 ~ BookingSuccess ~ booking:", booking);
 
   return (
     <main>

@@ -49,7 +49,6 @@ function SignIn() {
         redirect: false, // biar kita handle routing manual
         callbackUrl: searchParams.get("callbackUrl") || "/",
       });
-      console.log("🚀 ~ onSubmit ~ loginRes:", loginRes);
 
       if (loginRes?.error) {
         // Deteksi error email belum diverifikasi (sesuaikan dengan respon dari backend)
